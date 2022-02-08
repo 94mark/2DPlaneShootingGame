@@ -6,7 +6,7 @@ public class SystemManager : MonoBehaviour
 {
     static SystemManager instance = null;
 
-    public SystemManager Instance
+    public static SystemManager Instance
     {
         get
         {
@@ -26,6 +26,17 @@ public class SystemManager : MonoBehaviour
         instance = this;
     }
 
+    [SerializeField]
+    Player player;
+
+    public Player Hero
+    {
+        get
+        {
+            return player;
+        }
+    }
+    
     // Start is called before the first frame update
     void Start()
     {
