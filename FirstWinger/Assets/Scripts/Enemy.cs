@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public enum State
+    public enum State : int
     {
         None = -1,
         Ready = 0,
@@ -31,6 +31,8 @@ public class Enemy : MonoBehaviour
 
     float MoveStartTime = 0.0f;
 
+    float BattleStartTime = 0.0f;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -42,18 +44,33 @@ public class Enemy : MonoBehaviour
     {
         if(Input.GetKeyDown(KeyCode.L))
         {
-            Appear(new Vector3(7.0f, 0.0f, 0.0f));
-        }
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            Disappear(new Vector3(-15.0f, 0.0f, 0.0f));
+            Appear(new Vector3(7.0f,transform.position.y, transform.position.z));
         }
 
-        if(CurrentState == State.Appear || CurrentState == State.Disappear)
+        switch(CurrentState)
+        {
+            case State.None:
+            case State.Ready:
+                break;
+            case State.Dead:
+                break;
+            case State.Appear:
+            case State.Disappear:
+                UpdateSpeed();
+                UpdateMove();
+                break;
+            case State.Battle:
+                UpdateBattle();
+                break;
+        }
+        
+        /*if(CurrentState == State.Appear || CurrentState == State.Disappear)
         {
             UpdateMove();
             UpdateSpeed();
         }
+
+        CurrentState == State.Battle;*/
     }
 
     void UpdateSpeed()
@@ -81,6 +98,7 @@ public class Enemy : MonoBehaviour
         if(CurrentState == State.Appear)
         {
             CurrentState = State.Battle;
+            BattleStartTime = Time.time;
         }
         else //if (CurrentState = State.Disappear)
         {
@@ -104,5 +122,13 @@ public class Enemy : MonoBehaviour
 
         CurrentState = State.Disappear;
         MoveStartTime = Time.time;
+    }
+
+    void UpdateBattle()
+    {
+        if(Time.time - BattleStartTime > 3.0f)
+        {
+            Disappear(new Vector3(-15.0f, transform.position.y, transform.position.z));
+        }
     }
 }
