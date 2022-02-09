@@ -1288,6 +1288,10 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5549036779238918866, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
+      propertyPath: BulletSpeed
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5549036779238918866, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
       propertyPath: MainBGQuadTransform
       value: 
       objectReference: {fileID: 226380835}
