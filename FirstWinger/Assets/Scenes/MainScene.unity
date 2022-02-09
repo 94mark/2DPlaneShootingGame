@@ -989,27 +989,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
---- !u!1 &1520218785 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 652246009386603723, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
+--- !u!114 &1520218786 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5549036779238918866, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
   m_PrefabInstance: {fileID: 4043057784310758894}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &1520218786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1520218785}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8e702f96202d961479eaae949676a1bb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MoveVector: {x: 0, y: 0, z: 0}
-  Speed: 5
-  boxCollider: {fileID: 4043057784310758895}
-  MainBGQuadTransform: {fileID: 226380835}
 --- !u!1 &1976714273
 GameObject:
   m_ObjectHideFlags: 0
@@ -1221,7 +1211,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 652246009386603723, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3535230001281607969, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
       propertyPath: m_RootOrder
@@ -1229,7 +1219,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3535230001281607969, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 0
+      value: -7
       objectReference: {fileID: 0}
     - target: {fileID: 3535230001281607969, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1267,10 +1257,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    - target: {fileID: 5549036779238918866, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
+      propertyPath: MainBGQuadTransform
+      value: 
+      objectReference: {fileID: 226380835}
+    m_RemovedComponents:
+    - {fileID: 1787283736695736438, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
---- !u!65 &4043057784310758895 stripped
-BoxCollider:
-  m_CorrespondingSourceObject: {fileID: 8868203587264414671, guid: 05af8582f7f0ad44694273dbd92d094f, type: 3}
-  m_PrefabInstance: {fileID: 4043057784310758894}
-  m_PrefabAsset: {fileID: 0}
