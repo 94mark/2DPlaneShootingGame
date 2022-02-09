@@ -19,28 +19,30 @@ public class EnemyFactory : MonoBehaviour
         
     }
 
+    //로드된 프리팹은 파일 경로를 키로 사용하여 캐싱
     public GameObject Load(string resourcePath)
     {
         GameObject go = null;
 
-        if(EnemyFileCache.ContainsKey(resourcePath))
+        if(EnemyFileCache.ContainsKey(resourcePath)) //캐시 확인
         {
             go = EnemyFileCache[resourcePath];
         }
         else
         {
+            //캐시에 없으므로 로드
             go = Resources.Load<GameObject>(resourcePath);
             if(!go)
             {
                 Debug.LogError("Load error! path = " + resourcePath);
                 return null;
             }
-
+            //로드 후 캐시에 적재
             EnemyFileCache.Add(resourcePath, go);
         }
 
-        GameObject InstanceGo = Instantiate<GameObject>(go);
+        GameObject InstancedGo = Instantiate<GameObject>(go);
 
-        return InstanceGo;
+        return InstancedGo;
     }
 }

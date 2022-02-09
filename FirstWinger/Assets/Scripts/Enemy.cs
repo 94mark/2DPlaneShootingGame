@@ -41,12 +41,7 @@ public class Enemy : MonoBehaviour
 
     // Update is called once per frame
     void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            Appear(new Vector3(7.0f,transform.position.y, transform.position.z));
-        }
-
+    {      
         switch(CurrentState)
         {
             case State.None:
@@ -62,15 +57,7 @@ public class Enemy : MonoBehaviour
             case State.Battle:
                 UpdateBattle();
                 break;
-        }
-        
-        /*if(CurrentState == State.Appear || CurrentState == State.Disappear)
-        {
-            UpdateMove();
-            UpdateSpeed();
-        }
-
-        CurrentState == State.Battle;*/
+        }        
     }
 
     void UpdateSpeed()
