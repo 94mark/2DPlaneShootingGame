@@ -77,7 +77,15 @@ public class Enemy : MonoBehaviour
 
     void Arrived()
     {
-
+        CurrentSpeed = 0.0f;
+        if(CurrentState == State.Appear)
+        {
+            CurrentState = State.Battle;
+        }
+        else //if (CurrentState = State.Disappear)
+        {
+            CurrentState = State.None;
+        }
     }
 
     public void Appear(Vector3 targetPos)
@@ -92,7 +100,7 @@ public class Enemy : MonoBehaviour
     void Disappear(Vector3 targetPos)
     {
         TargetPosition = targetPos;
-        CurrentSpeed = 0;
+        CurrentSpeed = 0.0f;
 
         CurrentState = State.Disappear;
         MoveStartTime = Time.time;
