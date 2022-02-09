@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : Actor
 {
     [SerializeField]
     Vector3 MoveVector = Vector3.zero;
@@ -25,14 +25,7 @@ public class Player : MonoBehaviour
     [SerializeField]
     float BulletSpeed = 1;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
+    protected override void UpdateActor()
     {
         UpdateMove();
     }
@@ -74,12 +67,16 @@ public class Player : MonoBehaviour
     {
         Enemy enemy = other.GetComponentInParent<Enemy>();
         if (enemy)
-            enemy.OnCrash(this);
+        {
+            if(!enemy.IsDead)
+                enemy.OnCrash(this, CrashDamage);
+        }
     }
 
-    public void OnCrash(Enemy enemy)
+    public void OnCrash(Enemy enemy, int damage)
     {
         Debug.Log("OnCrash enemy = " + enemy);
+        OnCrash(damage);
     }
 
     public void Fire()
@@ -87,6 +84,6 @@ public class Player : MonoBehaviour
         GameObject go = Instantiate(Bullet);
 
         Bullet bullet = go.GetComponent<Bullet>();
-        bullet.Fire(OwnerSide.Player, FireTransform.position, FireTransform.right, BulletSpeed);
+        bullet.Fire(OwnerSide.Player, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
     }
 }

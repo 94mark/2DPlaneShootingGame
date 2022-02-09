@@ -10,7 +10,7 @@ public enum OwnerSide : int
 
 public class Bullet : MonoBehaviour
 {
-    const float LifeTime = 15.0f;
+    const float LifeTime = 15.0f; // 총알 생존 시간
 
     OwnerSide ownerSide = OwnerSide.Player;
 
@@ -20,10 +20,13 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     float Speed = 0.0f;
 
-    bool NeedMove = false;
+    bool NeedMove = false; //이동 플래그
 
     float FiredTime;
-    bool Hited = false;
+    bool Hited = false; //부딪혔는지 플래그
+
+    [SerializeField]
+    int Damage = 1;
 
     // Start is called before the first frame update
     void Start()
@@ -50,12 +53,13 @@ public class Bullet : MonoBehaviour
         transform.position += moveVector;
     }
 
-    public void Fire(OwnerSide FireOwner, Vector3 firePosition, Vector3 direction, float speed)
+    public void Fire(OwnerSide FireOwner, Vector3 firePosition, Vector3 direction, float speed, int damage)
     {
         ownerSide = FireOwner;
         transform.position = firePosition;
         MoveDirection = direction;
         Speed = speed;
+        Damage = damage;
 
         NeedMove = true;
         FiredTime = Time.time;
@@ -78,20 +82,34 @@ public class Bullet : MonoBehaviour
         if (Hited)
             return;
 
+        if (ownerSide == OwnerSide.Player)
+        {
+            Enemy enemy = collider.GetComponentInParent<Enemy>();
+            if (enemy.IsDead)
+                return;
+
+            enemy.OnBulletHited(Damage);
+        }
+        else
+        {
+            Player player = collider.GetComponentInParent<Player>();
+            if (player.IsDead)
+                return;
+
+            player.OnBulletHited(Damage);
+        }
+
         Collider myCollider = GetComponentInChildren<Collider>();
         myCollider.enabled = false;
 
         Hited = true;
         NeedMove = false;
 
-        if(ownerSide == OwnerSide.Player)
+        /*if (collider.gameObject.layer == LayerMask.NameToLayer("EnemyBullet")
+            || collider.gameObject.layer == LayerMask.NameToLayer("PlayerBullet"))
         {
-            Enemy enemy = collider.GetComponentInParent<Enemy>();
-        }
-        else
-        {
-            Player player = collider.GetComponentInParent<Player>();
-        }
+            return;
+        }*/              
     }
 
     private void OnTriggerEnter(Collider other)
