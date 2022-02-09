@@ -28,6 +28,8 @@ public class Bullet : MonoBehaviour
     [SerializeField]
     int Damage = 1;
 
+    Actor Owner;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -53,9 +55,9 @@ public class Bullet : MonoBehaviour
         transform.position += moveVector;
     }
 
-    public void Fire(OwnerSide FireOwner, Vector3 firePosition, Vector3 direction, float speed, int damage)
+    public void Fire(Actor owner, Vector3 firePosition, Vector3 direction, float speed, int damage)
     {
-        ownerSide = FireOwner;
+        Owner = owner;
         transform.position = firePosition;
         MoveDirection = direction;
         Speed = speed;
@@ -82,34 +84,23 @@ public class Bullet : MonoBehaviour
         if (Hited)
             return;
 
-        if (ownerSide == OwnerSide.Player)
+        if (collider.gameObject.layer == LayerMask.NameToLayer("EnemyBullet")
+            || collider.gameObject.layer == LayerMask.NameToLayer("PlayerBullet"))
         {
-            Enemy enemy = collider.GetComponentInParent<Enemy>();
-            if (enemy.IsDead)
-                return;
-
-            enemy.OnBulletHited(Damage);
+            return;
         }
-        else
-        {
-            Player player = collider.GetComponentInParent<Player>();
-            if (player.IsDead)
-                return;
 
-            player.OnBulletHited(Damage);
-        }
+        Actor actor = collider.GetComponentInParent<Actor>();
+        if (actor && actor.IsDead)
+            return;
+
+        actor.OnBulletHited(Owner, Damage);
 
         Collider myCollider = GetComponentInChildren<Collider>();
         myCollider.enabled = false;
 
         Hited = true;
-        NeedMove = false;
-
-        /*if (collider.gameObject.layer == LayerMask.NameToLayer("EnemyBullet")
-            || collider.gameObject.layer == LayerMask.NameToLayer("PlayerBullet"))
-        {
-            return;
-        }*/              
+        NeedMove = false;          
     }
 
     private void OnTriggerEnter(Collider other)
