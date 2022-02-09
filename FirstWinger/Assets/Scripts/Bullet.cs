@@ -20,6 +20,8 @@ public class Bullet : MonoBehaviour
 
     bool NeedMove = false;
 
+    bool Hited = false;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -38,7 +40,7 @@ public class Bullet : MonoBehaviour
             return;
 
         Vector3 moveVector = MoveDirection.normalized * Speed * Time.deltaTime;
-
+        moveVector = AdjustMove(moveVector);
         transform.position += moveVector;
     }
 
@@ -50,5 +52,43 @@ public class Bullet : MonoBehaviour
         Speed = speed;
 
         NeedMove = true;
+    }
+
+    Vector3 AdjustMove(Vector3 moveVector)
+    {
+        RaycastHit hitInfo;
+        if(Physics.Linecast(transform.position, transform.position + moveVector, out hitInfo))
+        {            
+            moveVector = hitInfo.point - transform.position;
+            OnBulletCollision(hitInfo.collider);
+        }
+
+        return moveVector;
+    }
+
+    void OnBulletCollision(Collider collider)
+    {
+        if (Hited)
+            return;
+
+        Collider myCollider = GetComponentInChildren<Collider>();
+        myCollider.enabled = false;
+
+        Hited = true;
+        NeedMove = false;
+
+        if(ownerSide == OwnerSide.Player)
+        {
+            Enemy enemy = collider.GetComponentInParent<Enemy>();
+        }
+        else
+        {
+            Player player = collider.GetComponentInParent<Player>();
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        OnBulletCollision(other);
     }
 }
