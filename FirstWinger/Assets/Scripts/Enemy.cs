@@ -48,6 +48,12 @@ public class Enemy : Actor
     [SerializeField]
     int GamePoint = 10;
 
+    public string FilePath
+    {
+        get;
+        set;
+    }
+
     protected override void UpdateActor()
     {      
         switch(CurrentState)

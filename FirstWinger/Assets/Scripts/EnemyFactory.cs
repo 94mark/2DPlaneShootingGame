@@ -41,8 +41,6 @@ public class EnemyFactory : MonoBehaviour
             EnemyFileCache.Add(resourcePath, go);
         }
 
-        GameObject InstancedGo = Instantiate<GameObject>(go);
-
-        return InstancedGo;
+        return go;
     }
 }
