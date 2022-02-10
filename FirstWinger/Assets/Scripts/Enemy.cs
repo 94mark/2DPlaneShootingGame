@@ -35,9 +35,6 @@ public class Enemy : Actor
     Transform FireTransform;
 
     [SerializeField]
-    GameObject Bullet;
-
-    [SerializeField]
     float BulletSpeed = 1;
 
     float LastBattleUpdateTime = 0.0f;
@@ -70,6 +67,9 @@ public class Enemy : Actor
                 break;
             case State.Battle:
                 UpdateBattle();
+                break;
+            default:
+                Debug.LogError("Undefined State!");
                 break;
         }        
     }
@@ -104,6 +104,7 @@ public class Enemy : Actor
         else //if (CurrentState = State.Disappear)
         {
             CurrentState = State.None;
+            SystemManager.Instance.EnemyManager.RemoveEnemy(this);
         }
     }
 
@@ -160,9 +161,7 @@ public class Enemy : Actor
 
     public void Fire()
     {
-        GameObject go = Instantiate(Bullet);
-
-        Bullet bullet = go.GetComponent<Bullet>();
+        Bullet bullet = SystemManager.Instance.BulletManager.Generate(BulletManager.EnemyBulletIndex);
         bullet.Fire(this, FireTransform.position, -FireTransform.right, BulletSpeed, Damage);
     }
 
@@ -171,8 +170,8 @@ public class Enemy : Actor
         base.OnDead(killer);
 
         SystemManager.Instance.GamePointAccumulator.Accumulate(GamePoint);
+        SystemManager.Instance.EnemyManager.RemoveEnemy(this);
 
         CurrentState = State.Dead;
-        Destroy(gameObject);
     }
 }

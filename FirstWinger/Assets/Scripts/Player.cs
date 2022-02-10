@@ -17,10 +17,7 @@ public class Player : Actor
     Transform MainBGQuadTransform;
 
     [SerializeField]
-    Transform FireTransform;
-
-    [SerializeField]
-    GameObject Bullet;
+    Transform FireTransform;    
 
     [SerializeField]
     float BulletSpeed = 1;
@@ -80,9 +77,7 @@ public class Player : Actor
 
     public void Fire()
     {
-        GameObject go = Instantiate(Bullet);
-
-        Bullet bullet = go.GetComponent<Bullet>();
+        Bullet bullet = SystemManager.Instance.BulletManager.Generate(BulletManager.PlayerBulletIndex);
         bullet.Fire(this, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
     }
 

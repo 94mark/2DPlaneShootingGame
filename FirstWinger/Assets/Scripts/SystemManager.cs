@@ -57,6 +57,17 @@ public class SystemManager : MonoBehaviour
         }
     }
 
+    [SerializeField]
+    BulletManager bulletManager;
+
+    public BulletManager BulletManager
+    {
+        get
+        {
+            return bulletManager;
+        }
+    }
+
     PrefabCacheSystem enemyCacheSystem = new PrefabCacheSystem();
 
     public PrefabCacheSystem EnemyCacheSystem

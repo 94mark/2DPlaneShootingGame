@@ -22,6 +22,12 @@ public class Bullet : MonoBehaviour
 
     Actor Owner;
 
+    public string FilePath
+    {
+        get;
+        set;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
