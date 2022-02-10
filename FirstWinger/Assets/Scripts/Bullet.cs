@@ -2,17 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum OwnerSide : int
-{
-    Player = 0,
-    Enemy
-}
-
 public class Bullet : MonoBehaviour
 {
     const float LifeTime = 15.0f; // 총알 생존 시간
-
-    OwnerSide ownerSide = OwnerSide.Player;
 
     [SerializeField]
     Vector3 MoveDirection = Vector3.zero;
@@ -71,7 +63,11 @@ public class Bullet : MonoBehaviour
     {
         RaycastHit hitInfo;
         if(Physics.Linecast(transform.position, transform.position + moveVector, out hitInfo))
-        {            
+        {
+            Actor actor = hitInfo.collider.GetComponentInParent<Actor>();
+            if (actor && actor.IsDead)
+                return moveVector;
+
             moveVector = hitInfo.point - transform.position;
             OnBulletCollision(hitInfo.collider);
         }
@@ -100,7 +96,11 @@ public class Bullet : MonoBehaviour
         myCollider.enabled = false;
 
         Hited = true;
-        NeedMove = false;          
+        NeedMove = false;
+
+        //GameObject go = SystemManager.Instance.EffectManager.GenerateEffect(0, transform.position);
+        //go.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
+        Disappear();
     }
 
     private void OnTriggerEnter(Collider other)

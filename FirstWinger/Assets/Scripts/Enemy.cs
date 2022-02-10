@@ -167,5 +167,6 @@ public class Enemy : Actor
         SystemManager.Instance.GamePointAccumulator.Accumulate(GamePoint);
 
         CurrentState = State.Dead;
+        Destroy(gameObject);
     }
 }
