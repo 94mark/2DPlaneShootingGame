@@ -59,6 +59,7 @@ MonoBehaviour:
   Bullet: {fileID: 5321588265087246984, guid: 2e226a9b66dd01f42b788a51de4872a4, type: 3}
   BulletSpeed: 10
   FireRemainCount: 3
+  GamePoint: 10
 --- !u!54 &3955402547222716415
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -180,7 +181,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6850418201872899123}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.518, y: 0.006, z: 0}
+  m_LocalPosition: {x: -0.881, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 2749153437759987503}
