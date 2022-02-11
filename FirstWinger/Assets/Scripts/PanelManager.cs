@@ -5,7 +5,7 @@ using System;
 
 public class PanelManager : MonoBehaviour
 {
-    static Dictionary<Tyep, BasePanel> Panels = new Dictionary<Tyep, BasePanel>;
+    static Dictionary<Type, BasePanel> Panels = new Dictionary<Type, BasePanel>();
 
     // Start is called before the first frame update
     void Start()
