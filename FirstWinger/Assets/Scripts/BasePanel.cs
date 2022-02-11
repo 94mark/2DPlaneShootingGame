@@ -35,12 +35,12 @@ public class BasePanel : MonoBehaviour
 
     public virtual void InitializePanel()
     {
-
+        PanelManager.RegistPanel(GetType(), this);
     }
 
     public virtual void DestroyPanel()
     {
-
+        PanelManager.UnregistPanel(GetType());
     }
 
     public virtual void Show()
