@@ -174,4 +174,11 @@ public class Enemy : Actor
 
         CurrentState = State.Dead;
     }
+
+    protected override void DecreaseHP(Actor attacker, int value)
+    {
+        base.DecreaseHP(attacker, value);
+
+        SystemManager.Instance.DamageManager.Generate(DamageManager.EnemyDamageIndex, transform.position + Random.insideUnitSphere * 0.5f, value);
+    }
 }

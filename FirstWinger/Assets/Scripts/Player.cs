@@ -93,6 +93,8 @@ public class Player : Actor
         base.DecreaseHP(attacker, value);
         PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
         playerStatePanel.SetHP(CurrentHp, MaxHP);
+
+        SystemManager.Instance.DamageManager.Generate(DamageManager.PlayerDamageIndex, transform.position + Random.insideUnitSphere * 0.5f, value);
     }
 
     protected override void OnDead(Actor killer)
