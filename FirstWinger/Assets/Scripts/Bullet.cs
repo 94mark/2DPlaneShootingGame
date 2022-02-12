@@ -93,7 +93,7 @@ public class Bullet : MonoBehaviour
         }
 
         Actor actor = collider.GetComponentInParent<Actor>();
-        if (actor && actor.IsDead)
+        if (actor && actor.IsDead || actor == Owner)
             return;
 
         actor.OnBulletHited(Owner, Damage, transform.position);

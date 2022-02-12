@@ -32,15 +32,15 @@ public class EnemyManager : MonoBehaviour
 
     }
 
-    public bool GenerateEnemy(string filePath, Vector3 position)
+    public bool GenerateEnemy(EnemyGenerateData data)
     {
-        GameObject go = SystemManager.Instance.EnemyCacheSystem.Archive(filePath);
+        GameObject go = SystemManager.Instance.EnemyCacheSystem.Archive(data.FilePath);
 
-        go.transform.position = position;
+        go.transform.position = data.GeneratePoint;
 
         Enemy enemy = go.GetComponent<Enemy>();
-        enemy.FilePath = filePath;
-        enemy.Appear(new Vector3(7.0f, 0.0f, 0.0f));
+        enemy.FilePath = data.FilePath;
+        enemy.Reset(data);
 
         enemies.Add(enemy);
         return true;

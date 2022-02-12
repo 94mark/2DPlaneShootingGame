@@ -44,7 +44,7 @@ public class Squadron : MonoBehaviour
     {
         for(int i = 0; i < enemyGenerateDatas.Length; i++)
         {
-            SystemManager.Instance.EnemyManager.GenerateEnemy(enemyGenerateDatas[i].FilePath, enemyGenerateDatas[i].GeneratePoint);
+            SystemManager.Instance.EnemyManager.GenerateEnemy(enemyGenerateDatas[i]);
         }
     }
 }
