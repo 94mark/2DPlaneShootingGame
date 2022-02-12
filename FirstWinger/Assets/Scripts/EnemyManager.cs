@@ -29,16 +29,11 @@ public class EnemyManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            GenerateEnemy(0, new Vector3(15.0f, 0.0f, 0.0f));
-        }
 
     }
 
-    public bool GenerateEnemy(int index, Vector3 position)
+    public bool GenerateEnemy(string filePath, Vector3 position)
     {
-        string filePath = enemyFiles[index].filePath;
         GameObject go = SystemManager.Instance.EnemyCacheSystem.Archive(filePath);
 
         go.transform.position = position;
