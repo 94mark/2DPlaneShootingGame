@@ -34,13 +34,10 @@ public class Squadron : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if(Input.GetKeyDown(KeyCode.L))
-        {
-            GenerateAllData();
-        }
+
     }
 
-    void GenerateAllData()
+    public void GenerateAllData()
     {
         for(int i = 0; i < enemyGenerateDatas.Length; i++)
         {
