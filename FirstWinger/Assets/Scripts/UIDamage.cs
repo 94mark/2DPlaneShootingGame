@@ -46,17 +46,10 @@ public class UIDamage : MonoBehaviour
         UpdateDamage();
     }
 
-    private void OnGUI()
-    {
-        if (GUILayout.Button("Show"))
-        {
-            ShowDamage(9999);
-        }
-    }
-
-    public void ShowDamage(int damage)
+    public void ShowDamage(int damage, Color textColor)
     {
         damageText.text = damage.ToString();
+        damageText.color = textColor;
         Reset();
         damageState = DamageState.SizeUp;
     }

@@ -62,7 +62,7 @@ public class DamageManager : MonoBehaviour
         }
     }
 
-    public GameObject Generate(int index, Vector3 position, int damageValue)
+    public GameObject Generate(int index, Vector3 position, int damageValue, Color textColor)
     {
         if(index < 0 || index >= Files.Length)
         {
@@ -77,7 +77,7 @@ public class DamageManager : MonoBehaviour
 
         UIDamage damage = go.GetComponent<UIDamage>();
         damage.FilePath = filePath;
-        damage.ShowDamage(damageValue);
+        damage.ShowDamage(damageValue, textColor);
 
         return go;
     }

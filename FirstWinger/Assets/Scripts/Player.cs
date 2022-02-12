@@ -73,13 +73,19 @@ public class Player : Actor
         if (enemy)
         {
             if(!enemy.IsDead)
-                enemy.OnCrash(this, CrashDamage);
+            {
+                BoxCollider box = ((BoxCollider)other);
+                Vector3 crashPos = enemy.transform.position + box.center;
+                crashPos.x += box.size.x * 0.5f;
+
+                enemy.OnCrash(this, CrashDamage, crashPos);
+            }                
         }
     }
 
-    public void OnCrash(Actor attacker, int damage)
+    public override void OnCrash(Actor attacker, int damage, Vector3 crashPos)
     {
-        base.OnCrash(attacker, damage);
+        base.OnCrash(attacker, damage, crashPos);
     }
 
     public void Fire()
@@ -88,13 +94,14 @@ public class Player : Actor
         bullet.Fire(this, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
     }
 
-    protected override void DecreaseHP(Actor attacker, int value)
+    protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)
     {
-        base.DecreaseHP(attacker, value);
+        base.DecreaseHP(attacker, value, damagePos);
         PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
         playerStatePanel.SetHP(CurrentHp, MaxHP);
 
-        SystemManager.Instance.DamageManager.Generate(DamageManager.PlayerDamageIndex, transform.position + Random.insideUnitSphere * 0.5f, value);
+        Vector3 damagePoint = damagePos + Random.insideUnitSphere * 0.5f;
+        SystemManager.Instance.DamageManager.Generate(DamageManager.PlayerDamageIndex, damagePoint, value, Color.red);
     }
 
     protected override void OnDead(Actor killer)

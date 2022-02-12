@@ -150,13 +150,19 @@ public class Enemy : Actor
         if (player)
         {
             if(!player.IsDead)
-                player.OnCrash(this, CrashDamage);
+            {
+                BoxCollider box = ((BoxCollider)other);
+                Vector3 crashPos = player.transform.position + box.center;
+                crashPos.x += box.size.x * 0.5f;
+
+                player.OnCrash(this, CrashDamage, crashPos);
+            }                
         }            
     }
 
-    public void OnCrash(Actor attacker, int damage)
+    public override void OnCrash(Actor attacker, int damage, Vector3 crashPos)
     {
-        base.OnCrash(attacker, damage);
+        base.OnCrash(attacker, damage, crashPos);
     }
 
     public void Fire()
@@ -175,10 +181,11 @@ public class Enemy : Actor
         CurrentState = State.Dead;
     }
 
-    protected override void DecreaseHP(Actor attacker, int value)
+    protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)
     {
-        base.DecreaseHP(attacker, value);
+        base.DecreaseHP(attacker, value, damagePos);
 
-        SystemManager.Instance.DamageManager.Generate(DamageManager.EnemyDamageIndex, transform.position + Random.insideUnitSphere * 0.5f, value);
+        Vector3 damagePoint = damagePos + Random.insideUnitSphere * 0.5f;
+        SystemManager.Instance.DamageManager.Generate(DamageManager.EnemyDamageIndex, damagePoint, value, Color.magenta);
     }
 }
