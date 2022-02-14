@@ -20,7 +20,7 @@ public struct SquadronMemberStruct
 
 public class SquadronTable : TableLoader<SquadronMemberStruct>
 {
-    Dictionary<int, SquadronMemberStruct> tableDatas = new Dictionary<int, SquadronMemberStruct>();
+    List<SquadronMemberStruct> tableDatas = new List<SquadronMemberStruct>();
 
     // Start is called before the first frame update
     void Start()
@@ -36,12 +36,12 @@ public class SquadronTable : TableLoader<SquadronMemberStruct>
 
     protected override void AddData(SquadronMemberStruct data)
     {
-        tableDatas.Add(data.index, data);
+        tableDatas.Add(data);
     }
 
     public SquadronMemberStruct GetSquadronMember(int index)
     {
-        if(!tableDatas.ContainsKey(index))
+        if(index < 0 || index >= tableDatas.Count)
         {
             Debug.LogError("GetSquadronMember Error! index = " + index);
             return default(SquadronMemberStruct);
