@@ -25,13 +25,13 @@ public class SquadronTable : TableLoader<SquadronMemberStruct>
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     protected override void AddData(SquadronMemberStruct data)
@@ -41,12 +41,17 @@ public class SquadronTable : TableLoader<SquadronMemberStruct>
 
     public SquadronMemberStruct GetSquadronMember(int index)
     {
-        if(index < 0 || index >= tableDatas.Count)
+        if (index < 0 || index >= tableDatas.Count)
         {
             Debug.LogError("GetSquadronMember Error! index = " + index);
             return default(SquadronMemberStruct);
         }
 
         return tableDatas[index];
+    }
+
+    public int GetCount()
+    {
+        return tableDatas.Count;
     }
 }

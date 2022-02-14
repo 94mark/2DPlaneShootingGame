@@ -113,17 +113,19 @@ public class Enemy : Actor
         }
     }
 
-    public void Reset(EnemyGenerateData data)
+    public void Reset(SquadronMemberStruct data)
     {
-        CurrentHp = MaxHP = data.MaxHP;
-        Damage = data.Damage;
-        crashDamage = data.CrashDamage;
-        BulletSpeed = data.BulletSpeed;
-        FireRemainCount = data.FireRemainCount;
-        GamePoint = data.GamePoint;
+        EnemyStruct enemyStruct = SystemManager.Instance.EnemyTable.GetEnemy(data.EnemyID);
 
-        AppearPoint = data.AppearPoint;
-        DisappearPoint = data.DisappearPoint;
+        CurrentHp = MaxHP = enemyStruct.MaxHP;
+        Damage = enemyStruct.Damage;
+        crashDamage = enemyStruct.CrashDamage;
+        BulletSpeed = enemyStruct.BulletSpeed;
+        FireRemainCount = enemyStruct.FireRemainCount;
+        GamePoint = enemyStruct.GamePoint;
+
+        AppearPoint = new Vector3(data.AppearPointX, data.AppearPointY, 0);
+        DisappearPoint = new Vector3(data.DisappearPointX, data.DisappearPointY, 0);
 
         CurrentState = State.Ready;
         LastActionUpdateTime = Time.time;
