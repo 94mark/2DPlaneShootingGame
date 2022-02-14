@@ -1,0 +1,9 @@
+index,FilePath,MaxHP,Damage,CrashDamage,BulletSpeed,FireRemainCount,GamePoint,ItemDropRate,ItemDropID
+0,Prefabs/Enemy,100,10,100,5,1,5,100,3
+1,Prefabs/Enemy,100,15,100,5,1,6,100,3
+2,Prefabs/Enemy,100,20,100,5,1,7,100,3
+3,Prefabs/Enemy,100,25,100,5,2,8,100,3
+4,Prefabs/Enemy,100,30,100,5,2,9,100,3
+5,Prefabs/Enemy,100,35,100,5,2,10,100,3
+6,Prefabs/Enemy,100,40,100,5,3,11,100,3
+7,Prefabs/Boss,1000,15,1000,5,5,200,100,3
