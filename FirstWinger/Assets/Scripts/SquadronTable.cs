@@ -1,9 +1,27 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Runtime.InteropServices;
 
-public class SquadronTable : MonoBehaviour
+[System.Serializable]
+[StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
+
+public struct SquadronMemberStruct
 {
+    public int index;
+    public int EnemyID;
+    public float GeneratePointX;
+    public float GeneratePointY;
+    public float AppearPointX;
+    public float AppearPointY;
+    public float DisappearPointX;
+    public float DisappearPointY;
+}
+
+public class SquadronTable : TableLoader<SquadronMemberStruct>
+{
+    Dictionary<int, SquadronMemberStruct> tableDatas = new Dictionary<int, SquadronMemberStruct>();
+
     // Start is called before the first frame update
     void Start()
     {
@@ -14,5 +32,21 @@ public class SquadronTable : MonoBehaviour
     void Update()
     {
         
+    }
+
+    protected override void AddData(SquadronMemberStruct data)
+    {
+        tableDatas.Add(data.index, data);
+    }
+
+    public SquadronMemberStruct GetSquadronMember(int index)
+    {
+        if(!tableDatas.ContainsKey(index))
+        {
+            Debug.LogError("GetSquadronMember Error! index = " + index);
+            return default(SquadronMemberStruct);
+        }
+
+        return tableDatas[index];
     }
 }
