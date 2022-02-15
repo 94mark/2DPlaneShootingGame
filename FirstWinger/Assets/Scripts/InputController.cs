@@ -38,14 +38,14 @@ public class InputController : MonoBehaviour
             moveDirection.x = 1;
         }
 
-        SystemManager.Instance.Hero.ProcessInput(moveDirection);
+        SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero.ProcessInput(moveDirection);
     }
 
     void UpdateMouse()
     {
         if(Input.GetMouseButtonDown(0))
         {
-            SystemManager.Instance.Hero.Fire();
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero.Fire();
         }
     }
 }
