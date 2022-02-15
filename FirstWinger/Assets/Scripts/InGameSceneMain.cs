@@ -4,6 +4,24 @@ using UnityEngine;
 
 public class InGameSceneMain : BaseSceneMain
 {
+    const float GameReadyInteval = 3.0f;
+
+    public enum GameState : int
+    {
+        Ready = 0,
+        Running,
+        End,
+    }
+
+    GameState currentGameState = GameState.Ready;
+    public GameState CurrentGameState
+    {
+        get
+        {
+            return currentGameState;
+        }
+    }
+
     [SerializeField]
     Player player;
 
@@ -110,6 +128,40 @@ public class InGameSceneMain : BaseSceneMain
         get
         {
             return damageCacheSystem;
+        }
+    }
+
+    [SerializeField]
+    SquadronManager squadronManager;
+
+    public SquadronManager SquadronManager
+    {
+        get
+        {
+            return squadronManager;
+        }
+    }
+
+    float SceneStartTime;
+
+    protected override void OnStart()
+    {
+        SceneStartTime = Time.time;
+    }
+
+    protected override void UpdateScene()
+    {
+        base.UpdateScene();
+
+        float currentTime = Time.time;
+
+        if(currentGameState == GameState.Ready)
+        {
+            if(currentTime - SceneStartTime > GameReadyInteval)
+            {
+                SquadronManager.StartGame();
+                currentGameState = GameState.Running;
+            }
         }
     }
 }
