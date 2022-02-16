@@ -35,6 +35,10 @@ public class InGameSceneMain : BaseSceneMain
             }
             return player;
         }
+        set
+        {
+            player = value;
+        }
     }
 
     GamePointAccumulator gamePointAccumulator = new GamePointAccumulator();
@@ -143,6 +147,17 @@ public class InGameSceneMain : BaseSceneMain
     }
 
     float SceneStartTime;
+
+    [SerializeField]
+    Transform mainBGQuadTransform;
+
+    public Transform MainBGQuadTransform
+    {
+        get
+        {
+            return mainBGQuadTransform;
+        }
+    }
 
     protected override void OnStart()
     {

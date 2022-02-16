@@ -1,11 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Player : Actor
 {
     [SerializeField]
+    [SyncVar]
     Vector3 MoveVector = Vector3.zero;
+
+    [SerializeField]
+    NetworkIdentity NetworkIdentity = null;
 
     [SerializeField]
     float Speed;
@@ -13,10 +18,7 @@ public class Player : Actor
     [SerializeField]
     BoxCollider boxCollider;
 
-    [SerializeField]
-    Transform MainBGQuadTransform;
-
-    [SerializeField]
+    [SerializeField]    
     Transform FireTransform;    
 
     [SerializeField]
@@ -27,6 +29,9 @@ public class Player : Actor
         base.Initialize();
         PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
         playerStatePanel.SetHP(CurrentHp, MaxHP);
+
+        if (isLocalPlayer)
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero = this;
     }
 
     protected override void UpdateActor()
@@ -41,7 +46,16 @@ public class Player : Actor
 
         MoveVector = AdjustMoveVector(MoveVector);
 
-        transform.position += MoveVector;
+        //transform.position += MoveVector;
+        CmdMove(MoveVector);
+    }
+
+    [Command]
+    public void CmdMove(Vector3 moveVector)
+    {
+        this.MoveVector = moveVector;
+        transform.position += moveVector;
+        base.SetDirtyBit(1);
     }
 
     public void ProcessInput(Vector3 moveDirection)
@@ -51,17 +65,18 @@ public class Player : Actor
 
     Vector3 AdjustMoveVector(Vector3 moveVector)
     {
+        Transform mainBGQuadTransform = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().MainBGQuadTransform;
         Vector3 result = Vector3.zero;
 
         result = boxCollider.transform.position + boxCollider.center + moveVector;
 
-        if (result.x - boxCollider.size.x * 0.5f < -MainBGQuadTransform.localScale.x * 0.5f)
+        if (result.x - boxCollider.size.x * 0.5f < -mainBGQuadTransform.localScale.x * 0.5f)
             moveVector.x = 0;
-        if (result.x + boxCollider.size.x * 0.5f > MainBGQuadTransform.localScale.x * 0.5f)
+        if (result.x + boxCollider.size.x * 0.5f > mainBGQuadTransform.localScale.x * 0.5f)
             moveVector.x = 0;
-        if (result.y - boxCollider.size.y * 0.5f < -MainBGQuadTransform.localScale.y * 0.5f)
+        if (result.y - boxCollider.size.y * 0.5f < -mainBGQuadTransform.localScale.y * 0.5f)
             moveVector.y = 0;
-        if (result.y + boxCollider.size.y * 0.5f > MainBGQuadTransform.localScale.y * 0.5f)
+        if (result.y + boxCollider.size.y * 0.5f > mainBGQuadTransform.localScale.y * 0.5f)
             moveVector.y = 0;
 
         return moveVector;
