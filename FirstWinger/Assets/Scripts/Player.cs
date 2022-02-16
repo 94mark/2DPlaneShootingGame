@@ -24,6 +24,8 @@ public class Player : Actor
     [SerializeField]
     float BulletSpeed = 1;
 
+    InputController inputController = new InputController();
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -34,9 +36,28 @@ public class Player : Actor
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero = this;
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+        Debug.Log("OnStartClient");
+    }
+
+    public override void OnStartLocalPlayer()
+    {
+        base.OnStartLocalPlayer();
+        Debug.Log("OnStartLocalPlayer");
+    }
+
     protected override void UpdateActor()
     {
+        UpdateInput();
         UpdateMove();
+    }
+
+    [ClientCallback]
+    public void UpdateInput()
+    {
+        inputController.UpdateInput();
     }
 
     void UpdateMove()
@@ -44,22 +65,43 @@ public class Player : Actor
         if (MoveVector.sqrMagnitude == 0)
             return;
 
-        MoveVector = AdjustMoveVector(MoveVector);
-
         //transform.position += MoveVector;
-        CmdMove(MoveVector);
+        //CmdMove(MoveVector);
+        if (isServer)
+        {
+            RpcMove(MoveVector); //Host 플레이어인 경우 RPC로 보내고
+        }
+        else
+        {
+            CmdMove(MoveVector); //Client 플레이어인 경우 Cmd로 호스트로 보낸 후 자신을 Self 동작
+            if (isLocalPlayer)
+                transform.position += AdjustMoveVector(MoveVector);
+        }
     }
 
     [Command]
     public void CmdMove(Vector3 moveVector)
     {
         this.MoveVector = moveVector;
-        transform.position += moveVector;
+        transform.position += AdjustMoveVector(this.MoveVector);
         base.SetDirtyBit(1);
+        this.MoveVector = Vector3.zero; //타 플레이어가 보낸 경우 Update를 통해 초기화 되지 않으므로 사용 후 바로 초기화
+    }
+
+    [ClientRpc]
+    public void RpcMove(Vector3 moveVector)
+    {
+        this.MoveVector = moveVector;
+        transform.position += AdjustMoveVector(this.MoveVector);
+        base.SetDirtyBit(1);
+        this.MoveVector = Vector3.zero; //타 플레이어가 보낸 경우 Update를 통해 초기화 되지 않으므로 사용 후 바로 초기화
     }
 
     public void ProcessInput(Vector3 moveDirection)
     {
+        if (!isLocalPlayer)
+            return;
+
         MoveVector = moveDirection * Speed * Time.deltaTime;
     }
 
