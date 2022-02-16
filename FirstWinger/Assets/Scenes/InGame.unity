@@ -1976,7 +1976,7 @@ MonoBehaviour:
   bulletManager: {fileID: 1444865416}
   damageManager: {fileID: 1402877641}
   squadronManager: {fileID: 847945999}
-  mainBGQuadTransform: {fileID: 0}
+  mainBGQuadTransform: {fileID: 226380835}
 --- !u!4 &1766594362
 Transform:
   m_ObjectHideFlags: 0

@@ -51,15 +51,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MaxHP: 100
   CurrentHp: 0
-  Damage: 35
+  Damage: 100
   crashDamage: 100
   isDead: 0
   MoveVector: {x: 0, y: 0, z: 0}
   NetworkIdentity: {fileID: 1170491273728522640}
-  Speed: 5
+  Speed: 10
   boxCollider: {fileID: 8868203587264414671}
   FireTransform: {fileID: 9174999806621730991}
-  BulletSpeed: 1
+  BulletSpeed: 5
 --- !u!54 &1986658983437670330
 Rigidbody:
   m_ObjectHideFlags: 0
