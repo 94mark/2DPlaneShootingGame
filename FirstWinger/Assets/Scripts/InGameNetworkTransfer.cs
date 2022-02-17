@@ -9,7 +9,6 @@ public enum GameState : int
     None = 0,
     Ready,
     Running,
-    NoInput,
     End,
 }
 
@@ -19,7 +18,7 @@ public class InGameNetworkTransfer : NetworkBehaviour
     /// <summary>
     /// 게임을 시작하기전 대기시간
     /// </summary>
-    const float GameReadyIntaval = 3.0f;
+    const float GameReadyInteval = 3.0f;
 
     [SyncVar]
     GameState currentGameState = GameState.None;
@@ -47,7 +46,7 @@ public class InGameNetworkTransfer : NetworkBehaviour
 
         if (currentGameState == GameState.Ready)
         {
-            if (currentTime - CountingStartTime > GameReadyIntaval)
+            if (currentTime - CountingStartTime > GameReadyInteval)
             {
                 SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().SquadronManager.StartGame();
                 currentGameState = GameState.Running;
