@@ -32,8 +32,18 @@ public class Player : Actor
         PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
         playerStatePanel.SetHP(CurrentHp, MaxHP);
 
+        InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+
         if (isLocalPlayer)
-            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().Hero = this;
+            inGameSceneMain.Hero = this;
+
+        Transform startTransform;
+        if (isServer)
+            startTransform = inGameSceneMain.PlayerStartTransform1;
+        else
+            startTransform = inGameSceneMain.PlayerStartTransform2;
+
+        SetPosition(startTransform.position);
     }
 
     public override void OnStartClient()
@@ -96,6 +106,39 @@ public class Player : Actor
         base.SetDirtyBit(1);
         this.MoveVector = Vector3.zero; //타 플레이어가 보낸 경우 Update를 통해 초기화 되지 않으므로 사용 후 바로 초기화
     }
+
+    void SetPosition(Vector3 position)
+    {
+        //정상적으로 NetworkBehaviour 인스턴스의 Update로 호출되어 실행되고 있을 때
+        //CmdSetPosition(position);
+
+        //MonoBehaviour 인스턴스의 Update로 호출되어 실행되고 있을 때의 변형
+        if(isServer)
+        {
+            RpcSetPosition(position); //Host 플레이어인 경우 RPC로 보내고
+        }
+        else
+        {
+            CmdSetPosition(position); //Client 플레이어인 경우
+            if (isLocalPlayer)
+                transform.position = position;
+        }
+    }
+
+    [Command]
+    public void CmdSetPosition(Vector3 position)
+    {
+        this.transform.position = position;
+        base.SetDirtyBit(1);
+    }
+
+    [ClientRpc]
+    public void RpcSetPosition(Vector3 position)
+    {
+        this.transform.position = position;
+        base.SetDirtyBit(1);
+    }
+
 
     public void ProcessInput(Vector3 moveDirection)
     {
