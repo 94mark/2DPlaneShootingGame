@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Networking;
 
 public class Enemy : Actor
 {
@@ -15,6 +16,7 @@ public class Enemy : Actor
     }
 
     [SerializeField]
+    [SyncVar]
     State CurrentState = State.None;
 
     const float MaxSpeed = 10.0f;
@@ -22,37 +24,71 @@ public class Enemy : Actor
     const float MaxSpeedTime = 0.5f;
 
     [SerializeField]
+    [SyncVar]
     Vector3 TargetPosition;
 
     [SerializeField]
+    [SyncVar]
     float CurrentSpeed;
 
+    [SyncVar]
     Vector3 CurrentVelocity;
 
+    [SyncVar]
     float MoveStartTime = 0.0f;    
 
     [SerializeField]
     Transform FireTransform;
 
     [SerializeField]
+    [SyncVar]
     float BulletSpeed = 1;
 
+    [SyncVar]
     float LastActionUpdateTime = 0.0f;
 
     [SerializeField]
+    [SyncVar]
     int FireRemainCount = 1;
 
     [SerializeField]
+    [SyncVar]
     int GamePoint = 10;
+
+    [SyncVar]
+    [SerializeField]
+    string filePath;
 
     public string FilePath
     {
-        get;
-        set;
+        get
+        {
+            return filePath;
+        }
+        set
+        {
+            filePath = value;
+        }
     }
 
+    [SyncVar]
     Vector3 AppearPoint;
+    [SyncVar]
     Vector3 DisappearPoint;
+
+    protected override void Initialize()
+    {
+        base.Initialize();
+        //Debug.Log("Enemy : Initialize");
+
+        if(!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+        {
+            InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+            transform.SetParent(inGameSceneMain.EnemyManager.transform);
+            inGameSceneMain.EnemyCacheSystem.Add(FilePath, gameObject);
+            gameObject.SetActive(false);
+        }
+    }
 
     protected override void UpdateActor()
     {      
@@ -129,6 +165,8 @@ public class Enemy : Actor
 
         CurrentState = State.Ready;
         LastActionUpdateTime = Time.time;
+
+        UpdateNetworkActor();
     }
 
     public void Appear(Vector3 targetPos)
