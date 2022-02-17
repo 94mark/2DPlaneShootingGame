@@ -6,7 +6,7 @@ public class InputController
 {    
     public void UpdateInput()
     {
-        if (SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().CurrentGameState != InGameSceneMain.GameState.Running)
+        if (SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().CurrentGameState != GameState.Running)
             return;
 
         UpdateKeyboard();

@@ -4,7 +4,18 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class FWNetworkManager : NetworkManager
-{    
+{
+    public const int WatingPlayerCount = 2;
+
+    int PlayerCount = 0;
+
+    public bool isServer
+    {
+        get;
+        private set;
+    }
+
+
     #region SERVER SIDE EVENT
 
     public override void OnServerConnect(NetworkConnection conn)
@@ -23,6 +34,14 @@ public class FWNetworkManager : NetworkManager
     {
         Debug.Log("OnServerReady : " + conn.address + ", " + conn.connectionId);
         base.OnServerReady(conn);
+
+        PlayerCount++;
+
+        if (PlayerCount >= WatingPlayerCount)
+        {
+            InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+            inGameSceneMain.GameStart();
+        }
     }
 
     public override void OnServerError(NetworkConnection conn, int errorCode)
@@ -35,6 +54,13 @@ public class FWNetworkManager : NetworkManager
     {
         Debug.Log("OnServerDisconnect : " + conn.address);
         base.OnServerDisconnect(conn);
+    }
+
+    public override void OnStartServer()
+    {
+        Debug.Log("OnStartServer");
+        base.OnStartServer();
+        isServer = true;
     }
 
     #endregion
@@ -68,6 +94,17 @@ public class FWNetworkManager : NetworkManager
     public override void OnClientDisconnect(NetworkConnection conn)
     {
         Debug.Log("OnClientDisconnect : " + conn.hostId);
+
+        if (!isServer)
+        {
+            InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+            if (inGameSceneMain.CurrentGameState == GameState.End)
+            {
+                inGameSceneMain.GotoTitleScene();
+                return;
+            }
+        }
+
         base.OnClientDisconnect(conn);
     }
 
