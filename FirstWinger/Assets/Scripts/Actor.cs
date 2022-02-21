@@ -41,6 +41,17 @@ public class Actor : NetworkBehaviour
         }
     }
 
+    [SyncVar]
+    protected int actorInstanceID = 0;
+
+    public int ActorInstanceID
+    {
+        get
+        {
+            return actorInstanceID;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -50,6 +61,12 @@ public class Actor : NetworkBehaviour
     protected virtual void Initialize()
     {
         CurrentHp = MaxHP;
+
+        if(isServer)
+        {
+            actorInstanceID = GetInstanceID();
+            RpcSetActorInstanceID(actorInstanceID);
+        }
     }
     // Update is called once per frame
     void Update()
@@ -158,6 +175,15 @@ public class Actor : NetworkBehaviour
     [ClientRpc]
     public void RpcUpdateNetworkActor()
     {
+        base.SetDirtyBit(1);
+    }
+
+    [ClientRpc]
+    public void RpcSetActorInstanceID(int instID)
+    {
+        if (this.actorInstanceID != 0)
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ActorManager.Regist(this.actorInstanceID, this);
+
         base.SetDirtyBit(1);
     }
 }
