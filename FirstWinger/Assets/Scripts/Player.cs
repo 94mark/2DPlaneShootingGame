@@ -53,6 +53,9 @@ public class Player : Actor
             startTransform = inGameSceneMain.PlayerStartTransform2;
 
         SetPosition(startTransform.position);
+
+        if (actorInstanceID != 0)
+            inGameSceneMain.ActorManager.Regist(actorInstanceID, this);
     }
 
     public override void OnStartClient()

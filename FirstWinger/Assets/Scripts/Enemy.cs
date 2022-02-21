@@ -81,13 +81,16 @@ public class Enemy : Actor
         base.Initialize();
         //Debug.Log("Enemy : Initialize");
 
+        InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
         if(!((FWNetworkManager)FWNetworkManager.singleton).isServer)
-        {
-            InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+        {            
             transform.SetParent(inGameSceneMain.EnemyManager.transform);
             inGameSceneMain.EnemyCacheSystem.Add(FilePath, gameObject);
             gameObject.SetActive(false);
         }
+
+        if (actorInstanceID != 0)
+            inGameSceneMain.ActorManager.Regist(actorInstanceID, this);
     }
 
     protected override void UpdateActor()

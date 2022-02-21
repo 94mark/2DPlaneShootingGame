@@ -181,6 +181,16 @@ public class InGameSceneMain : BaseSceneMain
         }
     }
 
+    ActorManager actorManager = new ActorManager();
+
+    public ActorManager ActorManager
+    {
+        get
+        {
+            return actorManager;
+        }
+    }
+
     public void GameStart()
     {
         NetworkTransfer.RpcGameStart();
