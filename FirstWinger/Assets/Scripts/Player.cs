@@ -26,6 +26,9 @@ public class Player : Actor
 
     InputController inputController = new InputController();
 
+    [SyncVar]
+    bool Host = false; //Host 플레이어인지 여부
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -37,8 +40,14 @@ public class Player : Actor
         if (isLocalPlayer)
             inGameSceneMain.Hero = this;
 
+        if(isServer && isLocalPlayer)
+        {
+            Host = true;
+            UpdateNetworkActor();
+        }
+
         Transform startTransform;
-        if (isServer)
+        if (Host)
             startTransform = inGameSceneMain.PlayerStartTransform1;
         else
             startTransform = inGameSceneMain.PlayerStartTransform2;

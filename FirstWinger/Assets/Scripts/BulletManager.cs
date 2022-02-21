@@ -62,7 +62,7 @@ public class BulletManager : MonoBehaviour
     public Bullet Generate(int index)
     {
         if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
-            return;
+            return null;
 
         string filePath = bulletFiles[index].filePath;
         GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Archive(filePath);
@@ -75,7 +75,7 @@ public class BulletManager : MonoBehaviour
     public bool Remove(Bullet bullet)
     {
         if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
-            return;
+            return true;
 
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Restore(bullet.FilePath, bullet.gameObject);
         return true;
