@@ -170,8 +170,23 @@ public class Player : Actor
 
     public void Fire()
     {
+        if (Host)
+        {
+            Bullet bullet = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.PlayerBulletIndex);
+            bullet.Fire(actorInstanceID, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
+        }
+        else
+        {
+            CmdFire(actorInstanceID, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
+        }
+    }
+
+    [Command]
+    public void CmdFire(int ownerInstanceID, Vector3 firePosition, Vector3 direction, float speed, int damage)
+    {
         Bullet bullet = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.PlayerBulletIndex);
-        bullet.Fire(this, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
+        bullet.Fire(ownerInstanceID, firePosition, direction, speed, damage);
+        base.SetDirtyBit(1);
     }
 
     protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)

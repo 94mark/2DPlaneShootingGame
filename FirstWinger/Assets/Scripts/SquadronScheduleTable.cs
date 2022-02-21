@@ -43,4 +43,10 @@ public class SquadronScheduleTable : TableLoader<SquadronScheduleDataStruct>
         }
         return tableDatas[index];
     }
+
+    //외부에서 데이터 갯수에 접근할 수 있도록 추가
+    public int GetDataCount()
+    {
+        return tableDatas.Count;
+    }
 }

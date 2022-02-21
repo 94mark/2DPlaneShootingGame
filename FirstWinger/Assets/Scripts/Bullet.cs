@@ -82,10 +82,10 @@ public class Bullet : NetworkBehaviour
         transform.position += moveVector;
     }
 
-    public void Fire(Actor owner, Vector3 firePosition, Vector3 direction, float speed, int damage)
+    public void Fire(int ownerInstanceID, Vector3 firePosition, Vector3 direction, float speed, int damage)
     {
         //Owner = owner;
-        OwnerInstanceID = owner.ActorInstanceID;
+        OwnerInstanceID = ownerInstanceID;
         SetPosition(firePosition);
         MoveDirection = direction;
         Speed = speed;
