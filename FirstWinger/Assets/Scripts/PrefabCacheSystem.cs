@@ -38,6 +38,13 @@ public class PrefabCacheSystem
                     enemy.FilePath = filePath;
                     NetworkServer.Spawn(go);
                 }
+
+                Bullet bullet = go.GetComponent<Bullet>();
+                if(bullet != null)
+                {
+                    bullet.FilePath = filePath;
+                    NetworkServer.Spawn(go);
+                }
             }
 
             Caches.Add(filePath, queue);
@@ -66,6 +73,11 @@ public class PrefabCacheSystem
         {
             enemy.RpcSetActive(true);
         }
+        Bullet bullet = go.GetComponent<Bullet>();
+        if(bullet != null)
+        {
+            bullet.RpcSetActive(true);
+        }
 
         return go;
     }
@@ -83,6 +95,12 @@ public class PrefabCacheSystem
         if(enemy != null)
         {
             enemy.RpcSetActive(false);
+        }
+
+        Bullet bullet = gameObject.GetComponent<Bullet>();
+        if(bullet != null)
+        {
+            bullet.RpcSetActive(false);
         }
 
         Caches[filePath].Enqueue(gameObject);
