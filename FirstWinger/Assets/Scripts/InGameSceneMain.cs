@@ -22,7 +22,7 @@ public class InGameSceneMain : BaseSceneMain
         {
             if(!player)
             {
-                Debug.LogError("Main Player is not setted!");
+                Debug.LogWarning("Main Player is not setted!");
             }
             return player;
         }

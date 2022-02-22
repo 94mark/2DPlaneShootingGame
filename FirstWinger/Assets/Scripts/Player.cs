@@ -26,14 +26,13 @@ public class Player : Actor
 
     InputController inputController = new InputController();
 
+    [SerializeField]
     [SyncVar]
     bool Host = false; //Host 플레이어인지 여부
 
     protected override void Initialize()
     {
         base.Initialize();
-        PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
-        playerStatePanel.SetHP(CurrentHp, MaxHP);
 
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
 
@@ -43,7 +42,7 @@ public class Player : Actor
         if(isServer && isLocalPlayer)
         {
             Host = true;
-            UpdateNetworkActor();
+            RpcSetHost();
         }
 
         Transform startTransform;
@@ -158,14 +157,9 @@ public class Player : Actor
                 Vector3 crashPos = enemy.transform.position + box.center;
                 crashPos.x += box.size.x * 0.5f;
 
-                enemy.OnCrash(this, CrashDamage, crashPos);
+                enemy.OnCrash(CrashDamage, crashPos);
             }                
         }
-    }
-
-    public override void OnCrash(Actor attacker, int damage, Vector3 crashPos)
-    {
-        base.OnCrash(attacker, damage, crashPos);
     }
 
     public void Fire()
@@ -189,19 +183,24 @@ public class Player : Actor
         base.SetDirtyBit(1);
     }
 
-    protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)
+    protected override void DecreaseHP(int value, Vector3 damagePos)
     {
-        base.DecreaseHP(attacker, value, damagePos);
-        PlayerStatePanel playerStatePanel = PanelManager.GetPanel(typeof(PlayerStatePanel)) as PlayerStatePanel;
-        playerStatePanel.SetHP(CurrentHp, MaxHP);
+        base.DecreaseHP(value, damagePos);
 
         Vector3 damagePoint = damagePos + Random.insideUnitSphere * 0.5f;
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageManager.Generate(DamageManager.PlayerDamageIndex, damagePoint, value, Color.red);
     }
 
-    protected override void OnDead(Actor killer)
+    protected override void OnDead()
     {
-        base.OnDead(killer);
+        base.OnDead();
         gameObject.SetActive(false);
+    }
+
+    [ClientRpc]
+    public void RpcSetHost()
+    {
+        Host = true;
+        base.SetDirtyBit(1);
     }
 }

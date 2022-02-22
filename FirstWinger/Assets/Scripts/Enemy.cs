@@ -154,6 +154,20 @@ public class Enemy : Actor
 
     public void Reset(SquadronMemberStruct data)
     {
+        if(isServer)
+        {
+            RpcReset(data);
+        }
+        else
+        {
+            CmdReset(data);
+            if (isLocalPlayer)
+                ResetData(data);
+        }
+    }
+
+    void ResetData(SquadronMemberStruct data)
+    {
         EnemyStruct enemyStruct = SystemManager.Instance.EnemyTable.GetEnemy(data.EnemyID);
 
         CurrentHp = MaxHP = enemyStruct.MaxHP;
@@ -169,7 +183,7 @@ public class Enemy : Actor
         CurrentState = State.Ready;
         LastActionUpdateTime = Time.time;
 
-        UpdateNetworkActor();
+        isDead = false; //Enemy는 재사용되므로 초기화
     }
 
     public void Appear(Vector3 targetPos)
@@ -227,14 +241,9 @@ public class Enemy : Actor
                 Vector3 crashPos = player.transform.position + box.center;
                 crashPos.x += box.size.x * 0.5f;
 
-                player.OnCrash(this, CrashDamage, crashPos);
+                player.OnCrash(CrashDamage, crashPos);
             }                
         }            
-    }
-
-    public override void OnCrash(Actor attacker, int damage, Vector3 crashPos)
-    {
-        base.OnCrash(attacker, damage, crashPos);
     }
 
     public void Fire()
@@ -243,9 +252,9 @@ public class Enemy : Actor
         bullet.Fire(actorInstanceID, FireTransform.position, -FireTransform.right, BulletSpeed, Damage);        
     }
 
-    protected override void OnDead(Actor killer)
+    protected override void OnDead()
     {
-        base.OnDead(killer);
+        base.OnDead();
 
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().GamePointAccumulator.Accumulate(GamePoint);
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.RemoveEnemy(this);
@@ -253,11 +262,25 @@ public class Enemy : Actor
         CurrentState = State.Dead;
     }
 
-    protected override void DecreaseHP(Actor attacker, int value, Vector3 damagePos)
+    protected override void DecreaseHP(int value, Vector3 damagePos)
     {
-        base.DecreaseHP(attacker, value, damagePos);
+        base.DecreaseHP(value, damagePos);
 
         Vector3 damagePoint = damagePos + Random.insideUnitSphere * 0.5f;
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageManager.Generate(DamageManager.EnemyDamageIndex, damagePoint, value, Color.magenta);
+    }
+
+    [Command]
+    public void CmdReset(SquadronMemberStruct data)
+    {
+        ResetData(data);
+        base.SetDirtyBit(1);
+    }
+
+    [ClientRpc]
+    public void RpcReset(SquadronMemberStruct data)
+    {
+        ResetData(data);
+        base.SetDirtyBit(1);
     }
 }

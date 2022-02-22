@@ -129,7 +129,7 @@ public class Bullet : NetworkBehaviour
         if (actor && actor.IsDead || actor.gameObject.layer == owner.gameObject.layer)
             return;
 
-        actor.OnBulletHited(owner, Damage, transform.position);
+        actor.OnBulletHited(Damage, transform.position);
 
         Collider myCollider = GetComponentInChildren<Collider>();
         myCollider.enabled = false;
