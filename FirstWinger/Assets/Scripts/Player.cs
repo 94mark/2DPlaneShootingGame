@@ -30,6 +30,9 @@ public class Player : Actor
     [SyncVar]
     bool Host = false; //Host 플레이어인지 여부
 
+    [SerializeField]
+    Material ClientPlayerMaterial;
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -49,7 +52,11 @@ public class Player : Actor
         if (Host)
             startTransform = inGameSceneMain.PlayerStartTransform1;
         else
+        {
             startTransform = inGameSceneMain.PlayerStartTransform2;
+            MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
+            meshRenderer.material = ClientPlayerMaterial;
+        }
 
         SetPosition(startTransform.position);
 
