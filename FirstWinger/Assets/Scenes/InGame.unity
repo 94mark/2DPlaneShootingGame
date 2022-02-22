@@ -389,6 +389,56 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FilePath: Tables/SquadronScheduleTable1
+--- !u!1 &367439683
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 367439685}
+  - component: {fileID: 367439684}
+  m_Layer: 0
+  m_Name: ItemBoxManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &367439684
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367439683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 308da54931f514e41b9d7946474979b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ItemBoxFiles:
+  - filePath: Prefabs/ItemBoxRed
+    cacheCount: 10
+  - filePath: Prefabs/ItemBoxBlue
+    cacheCount: 10
+  - filePath: Prefabs/ItemBoxOrange
+    cacheCount: 10
+--- !u!4 &367439685
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 367439683}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 16
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &418910381
 GameObject:
   m_ObjectHideFlags: 0
@@ -2035,6 +2085,7 @@ MonoBehaviour:
   enemyManager: {fileID: 810311392}
   bulletManager: {fileID: 1444865416}
   damageManager: {fileID: 1402877641}
+  itemBoxManager: {fileID: 367439684}
   squadronManager: {fileID: 847945999}
   mainBGQuadTransform: {fileID: 226380835}
   inGameNetworkTransfer: {fileID: 1981837358}

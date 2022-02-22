@@ -11,6 +11,22 @@ public class ItemBox : NetworkBehaviour
     [SerializeField]
     Vector3 RotateAngle = new Vector3(0.0f, 0.5f, 0.0f);
 
+    [SyncVar]
+    [SerializeField]
+    string filePath;
+
+    public string FilePath
+    {
+        get
+        {
+            return filePath;
+        }
+        set
+        {
+            filePath = value;
+        }
+    }
+
     // Start is called before the first frame update
     void Start()
     {
