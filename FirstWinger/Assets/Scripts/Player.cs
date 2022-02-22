@@ -5,6 +5,8 @@ using UnityEngine.Networking;
 
 public class Player : Actor
 {
+    const string PlayerHUDPath = "Prefabs/PlayerHUD";
+
     [SerializeField]
     [SyncVar]
     Vector3 MoveVector = Vector3.zero;
@@ -62,6 +64,17 @@ public class Player : Actor
 
         if (actorInstanceID != 0)
             inGameSceneMain.ActorManager.Regist(actorInstanceID, this);
+
+        InitializePlayerHUD();
+    }
+
+    void InitializePlayerHUD()
+    {
+        InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+        GameObject go = Resources.Load<GameObject>(PlayerHUDPath);
+        GameObject goInstance = Instantiate<GameObject>(go, inGameSceneMain.DamageManager.CanvasTransform);
+        PlayerHUD playerHUD = goInstance.GetComponent<PlayerHUD>();
+        playerHUD.Initialize(this);
     }
 
     public override void OnStartClient()
