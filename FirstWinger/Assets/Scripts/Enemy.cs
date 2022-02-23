@@ -259,7 +259,9 @@ public class Enemy : Actor
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
         inGameSceneMain.GamePointAccumulator.Accumulate(GamePoint);
         inGameSceneMain.EnemyManager.RemoveEnemy(this);
-        inGameSceneMain.ItemBoxManager.Generate(0, transform.position);
+        //inGameSceneMain.ItemBoxManager.Generate(0, transform.position);
+        //inGameSceneMain.ItemBoxManager.Generate(1, transform.position);
+        inGameSceneMain.ItemBoxManager.Generate(2, transform.position);
 
         CurrentState = State.Dead;
     }

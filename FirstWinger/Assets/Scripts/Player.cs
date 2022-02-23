@@ -35,6 +35,10 @@ public class Player : Actor
     [SerializeField]
     Material ClientPlayerMaterial;
 
+    [SerializeField]
+    [SyncVar]
+    int UsableItemCount = 0;
+
     protected override void Initialize()
     {
         base.Initialize();
@@ -224,6 +228,47 @@ public class Player : Actor
     public void RpcSetHost()
     {
         Host = true;
+        base.SetDirtyBit(1);
+    }
+
+    protected virtual void InternalIncreaseHP(int value)
+    {
+        if (isDead)
+            return;
+
+        CurrentHp += value;
+
+        if (CurrentHp > MaxHP)
+            CurrentHp = MaxHP;
+    }
+
+    public virtual void IncreaseHP(int value)
+    {
+        if (isDead)
+            return;
+
+        CmdIncreaseHP(value);
+    }
+
+    [Command]
+    public void CmdIncreaseHP(int value)
+    {
+        InternalIncreaseHP(value);
+        base.SetDirtyBit(1);
+    }
+
+    public virtual void IncreaseUsableItem(int value = 1)
+    {
+        if (isDead)
+            return;
+
+        CmdIncreaseUsableItem(value);
+    }
+
+    [Command]
+    public void CmdIncreaseUsableItem(int value)
+    {
+        UsableItemCount += value;
         base.SetDirtyBit(1);
     }
 }
