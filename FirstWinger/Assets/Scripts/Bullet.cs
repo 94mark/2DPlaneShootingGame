@@ -102,6 +102,10 @@ public class Bullet : NetworkBehaviour
         RaycastHit hitInfo;
         if(Physics.Linecast(transform.position, transform.position + moveVector, out hitInfo))
         {
+            int colliderLayer = hitInfo.collider.gameObject.layer;
+            if (colliderLayer != LayerMask.NameToLayer("Enemy") && colliderLayer != LayerMask.NameToLayer("Player"))
+                return moveVector;
+
             Actor actor = hitInfo.collider.GetComponentInParent<Actor>();
             if (actor && actor.IsDead)
                 return moveVector;
@@ -123,10 +127,16 @@ public class Bullet : NetworkBehaviour
         {
             return;
         }
+
         Actor owner = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ActorManager.GetActor(OwnerInstanceID);
+        if (owner == null)
+            return;
 
         Actor actor = collider.GetComponentInParent<Actor>();
-        if (actor && actor.IsDead || actor.gameObject.layer == owner.gameObject.layer)
+        if(actor == null)
+            return;
+
+        if (actor.IsDead || actor.gameObject.layer == owner.gameObject.layer)
             return;
 
         actor.OnBulletHited(Damage, transform.position);
@@ -144,6 +154,10 @@ public class Bullet : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        int colliderLayer = other.gameObject.layer;
+        if (colliderLayer != LayerMask.NameToLayer("Enemy") && colliderLayer != LayerMask.NameToLayer("Player"))
+            return;
+
         OnBulletCollision(other);
     }
 

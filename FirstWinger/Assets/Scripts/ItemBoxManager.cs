@@ -12,7 +12,7 @@ public class ItemBoxManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        Prepare();
+
     }
 
     // Update is called once per frame
@@ -23,6 +23,9 @@ public class ItemBoxManager : MonoBehaviour
 
     public GameObject Generate(int index, Vector3 position)
     {
+        if(!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+                return null;
+
         if(index < 0 || index >= ItemBoxFiles.Length)
         {
             Debug.LogError("Generate error! out of range! index = " + index);
@@ -31,9 +34,9 @@ public class ItemBoxManager : MonoBehaviour
 
         string filePath = ItemBoxFiles[index].filePath;
         GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ItemBoxCacheSystem.Archive(filePath);
-        go.transform.position = position;
 
         ItemBox item = go.GetComponent<ItemBox>();
+        item.RpcSetPosition(position);
         item.FilePath = filePath;
 
         return go;
@@ -65,6 +68,9 @@ public class ItemBoxManager : MonoBehaviour
 
     public void Prepare()
     {
+        if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            return;
+
         for ( int i = 0; i < ItemBoxFiles.Length; i++)
         {
             GameObject go = Load(ItemBoxFiles[i].filePath);
@@ -74,6 +80,9 @@ public class ItemBoxManager : MonoBehaviour
 
     public bool Remove(ItemBox item)
     {
+        if(!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            return true;
+
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ItemBoxCacheSystem.Restore(item.FilePath, item.gameObject);
         return true;
     }

@@ -64,5 +64,6 @@ public class InGameNetworkTransfer : NetworkBehaviour
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
         inGameSceneMain.EnemyManager.Prepare();
         inGameSceneMain.BulletManager.Prepare();
+        inGameSceneMain.ItemBoxManager.Prepare();
     }
 }
