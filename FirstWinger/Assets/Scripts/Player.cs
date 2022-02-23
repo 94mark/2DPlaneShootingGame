@@ -39,6 +39,14 @@ public class Player : Actor
     [SyncVar]
     int UsableItemCount = 0;
 
+    public int ItemCount
+    {
+        get
+        {
+            return UsableItemCount;
+        }
+    }
+
     protected override void Initialize()
     {
         base.Initialize();
