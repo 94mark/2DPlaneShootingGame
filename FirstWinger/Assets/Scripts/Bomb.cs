@@ -5,16 +5,40 @@ using UnityEngine.Networking;
 
 public class Bomb : Bullet
 {
+    const float MaxRotateTime = 30.0f;
+    const float MaxRotateZ = 90.0f;
+
     [SerializeField]
     Rigidbody selfRigidbody;
 
     [SerializeField]
     Vector3 Force;
 
-    protected override void UpdateMove()
+    [SyncVar]
+    float RotateStartTime = 0.0f;
+
+    [SyncVar]
+    [SerializeField]
+    float CurrentRotateZ;
+
+    Vector3 currentEulerAngles = Vector3.zero;
+
+    protected override void UpdateTransform()
     {
         if (!NeedMove)
             return;
+
+        UpdateRotate();
+    }
+
+    void UpdateRotate()
+    {
+        CurrentRotateZ = Mathf.Lerp(CurrentRotateZ, MaxRotateZ, (Time.time - RotateStartTime) / MaxRotateTime);
+        currentEulerAngles.z = -CurrentRotateZ;
+
+        Quaternion rot = Quaternion.identity;
+        rot.eulerAngles = currentEulerAngles;
+        transform.localRotation = rot;
     }
 
     public override void Fire(int ownerInstanceID, Vector3 firePosition, Vector3 direction, float speed, int damage)
@@ -43,6 +67,9 @@ public class Bomb : Bullet
     public void CmdAddForce(Vector3 force)
     {
         selfRigidbody.AddForce(force);
+        RotateStartTime = Time.time;
+        CurrentRotateZ = 0.0f;
+        transform.localRotation = Quaternion.identity;
         base.SetDirtyBit(1);
     }
 
@@ -50,6 +77,9 @@ public class Bomb : Bullet
     public void RpcAddForce(Vector3 force)
     {
         selfRigidbody.AddForce(force);
+        RotateStartTime = Time.time;
+        CurrentRotateZ = 0.0f;
+        transform.localRotation = Quaternion.identity;
         base.SetDirtyBit(1);
     }    
 }
