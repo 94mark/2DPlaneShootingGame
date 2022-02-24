@@ -322,7 +322,35 @@ public class Enemy : Actor
         else //if (ItemGen <= (dropStruct.Rate1 + dropStruct.Rate2 + dropStruct.Rate3)) // 3번 아이템 비율인 경우
             ItemIndex = dropStruct.ItemID3;
 
+        Debug.Log("GenerateItem ItemIndex = " + ItemIndex);
+
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
         inGameSceneMain.ItemBoxManager.Generate(ItemIndex, transform.position);
+    }
+
+    public void AddList()
+    {
+        if (isServer)
+            RpcAddList();
+    }
+
+    [ClientRpc]
+    public void RpcAddList()
+    {
+        SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.AddList(this);
+        base.SetDirtyBit(1);
+    }
+
+    public void RemoveList()
+    {
+        if (isServer)
+            RpcRemoveList();
+    }
+
+    [ClientRpc]
+    public void RpcRemoveList()
+    {
+        SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.RemoveList(this);
+        base.SetDirtyBit(1);
     }
 }

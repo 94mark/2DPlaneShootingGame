@@ -23,6 +23,9 @@ public class Bomb : Bullet
 
     Vector3 currentEulerAngles = Vector3.zero;
 
+    [SerializeField]
+    SphereCollider ExplodeArea;
+
     protected override void UpdateTransform()
     {
         if (!NeedMove)
@@ -42,15 +45,22 @@ public class Bomb : Bullet
         {
             Vector3 newPos = transform.position;
             newPos.y = -mainBQQuadTransform.localScale.y * 0.5f;
-            transform.position = newPos;
+            StopForExplosion(newPos);
+            Explode();
 
-            selfRigidbody.useGravity = false;
-            selfRigidbody.velocity = Vector3.zero;
-            NeedMove = false;
             return true;
         }
 
         return false;
+    }
+
+    void StopForExplosion(Vector3 stopPos)
+    {
+        transform.position = stopPos;
+
+        selfRigidbody.useGravity = false;
+        selfRigidbody.velocity = Vector3.zero;
+        NeedMove = false;
     }
 
     void UpdateRotate()
@@ -78,6 +88,7 @@ public class Bomb : Bullet
         CurrentRotateZ = 0.0f;
         transform.localRotation = Quaternion.identity;
         selfRigidbody.useGravity = true;
+        ExplodeArea.enabled = false;
     }
 
     public void AddForce(Vector3 force)
@@ -107,4 +118,62 @@ public class Bomb : Bullet
         InternelAddForce(force);
         base.SetDirtyBit(1);
     }    
+
+    void InternalExplode()
+    {
+        Debug.Log("InternalExplode is called");
+        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectManager.GenerateEffect(EffectManager.BombExplodeFxIndex, transform.position);
+
+        ExplodeArea.enabled = true;
+        List<Enemy> targetList = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.GetContainEnemies(ExplodeArea);
+        for(int i = 0; i < targetList.Count; i++)
+        {
+            if (targetList[i].IsDead)
+                continue;
+
+            targetList[i].OnBulletHited(Damage, targetList[i].transform.position);
+        }
+
+        if (gameObject.activeSelf)
+            Disappear();
+    }
+
+    void Explode()
+    {
+        if(isServer)
+        {
+            RpcExplode();
+        }
+        else
+        {
+            CmdExplode();
+            if (isLocalPlayer)
+                InternalExplode();
+        }
+    }
+
+    [Command]
+    public void CmdExplode()
+    {
+        InternalExplode();
+        base.SetDirtyBit(1);
+    }
+
+    [ClientRpc]
+    public void RpcExplode()
+    {
+        InternalExplode();
+        base.SetDirtyBit(1);
+    }
+
+    protected override bool OnBulletCollision(Collider collider)
+    {
+        if( !base.OnBulletCollision(collider))
+        {
+            return false;
+        }
+
+        Explode();
+        return true;
+    }
 }

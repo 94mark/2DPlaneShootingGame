@@ -220,6 +220,9 @@ public class Player : Actor
 
     public void FireBomb()
     {
+        if (UsableItemCount <= 0)
+            return;
+
         if(Host)
         {
             Bullet bullet = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.PlayerBombIndex);
@@ -229,6 +232,7 @@ public class Player : Actor
         {
             CmdFireBomb(actorInstanceID, FireTransform.position, FireTransform.right, BulletSpeed, Damage);
         }
+        DecreaseUsableItemCount();
     }
 
     [Command]
@@ -236,6 +240,34 @@ public class Player : Actor
     {
         Bullet bullet = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.PlayerBombIndex);
         bullet.Fire(ownerInstanceID, firePosition, direction, speed, damage);
+        base.SetDirtyBit(1);
+    }
+
+    void DecreaseUsableItemCount()
+    {
+        if(isServer)
+        {
+            RpcDecreaseUsableItemCount();
+        }
+        else
+        {
+            CmdDecreaseUsableItemCount();
+            if (isLocalPlayer)
+                UsableItemCount--;
+        }
+    }
+
+    [Command]
+    public void CmdDecreaseUsableItemCount()
+    {
+        UsableItemCount--;
+        base.SetDirtyBit(1);
+    }
+
+    [ClientRpc]
+    public void RpcDecreaseUsableItemCount()
+    {
+        UsableItemCount--;
         base.SetDirtyBit(1);
     }
 
