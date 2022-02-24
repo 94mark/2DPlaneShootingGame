@@ -28,7 +28,29 @@ public class Bomb : Bullet
         if (!NeedMove)
             return;
 
+        if (CheckScreenBottom())
+            return;
+
         UpdateRotate();
+    }
+
+    bool CheckScreenBottom()
+    {
+        Transform mainBQQuadTransform = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().MainBGQuadTransform;
+
+        if(transform.position.y < -mainBQQuadTransform.localScale.y * 0.5f)
+        {
+            Vector3 newPos = transform.position;
+            newPos.y = -mainBQQuadTransform.localScale.y * 0.5f;
+            transform.position = newPos;
+
+            selfRigidbody.useGravity = false;
+            selfRigidbody.velocity = Vector3.zero;
+            NeedMove = false;
+            return true;
+        }
+
+        return false;
     }
 
     void UpdateRotate()
@@ -45,8 +67,17 @@ public class Bomb : Bullet
     {
         base.Fire(ownerInstanceID, firePosition, direction, speed, damage);
 
-        selfRigidbody.velocity = Vector3.zero;
         AddForce(Force);
+    }
+
+    void InternelAddForce(Vector3 force)
+    {
+        selfRigidbody.velocity = Vector3.zero;
+        selfRigidbody.AddForce(force);
+        RotateStartTime = Time.time;
+        CurrentRotateZ = 0.0f;
+        transform.localRotation = Quaternion.identity;
+        selfRigidbody.useGravity = true;
     }
 
     public void AddForce(Vector3 force)
@@ -59,27 +90,21 @@ public class Bomb : Bullet
         {
             CmdAddForce(force);
             if (isLocalPlayer)
-                selfRigidbody.AddForce(force);
+                InternelAddForce(force);
         }
     }
 
     [Command]
     public void CmdAddForce(Vector3 force)
     {
-        selfRigidbody.AddForce(force);
-        RotateStartTime = Time.time;
-        CurrentRotateZ = 0.0f;
-        transform.localRotation = Quaternion.identity;
+        InternelAddForce(force);
         base.SetDirtyBit(1);
     }
 
     [ClientRpc]
     public void RpcAddForce(Vector3 force)
     {
-        selfRigidbody.AddForce(force);
-        RotateStartTime = Time.time;
-        CurrentRotateZ = 0.0f;
-        transform.localRotation = Quaternion.identity;
+        InternelAddForce(force);
         base.SetDirtyBit(1);
     }    
 }
