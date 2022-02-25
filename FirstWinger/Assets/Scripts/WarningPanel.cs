@@ -117,7 +117,7 @@ public class WarningPanel : BasePanel
 
     void OnPhaseStay()
     {
-        //SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().GenerateBoss();
+        SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().GenerateBoss();
     }
 
     void OnPhaseEnd()

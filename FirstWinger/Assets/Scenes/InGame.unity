@@ -558,6 +558,7 @@ GameObject:
   - component: {fileID: 363306211}
   - component: {fileID: 363306213}
   - component: {fileID: 363306212}
+  - component: {fileID: 363306214}
   m_Layer: 5
   m_Name: WarningPanel
   m_TagString: Untagged
@@ -623,6 +624,21 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 363306210}
   m_CullTransparentMesh: 1
+--- !u!114 &363306214
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 363306210}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c39a190146ef6142ad922953489de89, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BackgroundImage: {fileID: 363306212}
+  CanvasRectTransform: {fileID: 1623581692}
+  TextBackRectTransform: {fileID: 258806195}
 --- !u!1 &367439683
 GameObject:
   m_ObjectHideFlags: 0
@@ -1206,6 +1222,8 @@ MonoBehaviour:
   enemyFiles:
   - filePath: Prefabs/Enemy
     cacheCount: 20
+  - filePath: Prefabs/Boss
+    cacheCount: 1
 --- !u!4 &810311393
 Transform:
   m_ObjectHideFlags: 0
@@ -2634,6 +2652,9 @@ MonoBehaviour:
   inGameNetworkTransfer: {fileID: 1981837358}
   playerStartTransform1: {fileID: 418910382}
   playerStartTransform2: {fileID: 103356071}
+  BossFilePath: Prefabs/Boss
+  BossGeneratePos: {x: 15, y: 0, z: 0}
+  BossAppearPos: {x: 5, y: 0, z: 0}
 --- !u!4 &1766594362
 Transform:
   m_ObjectHideFlags: 0
