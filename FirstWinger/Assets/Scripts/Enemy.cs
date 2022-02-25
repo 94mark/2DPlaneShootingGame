@@ -38,7 +38,7 @@ public class Enemy : Actor
     protected float MoveStartTime = 0.0f;    
 
     [SerializeField]
-    Transform FireTransform;
+    protected Transform FireTransform;
 
     [SerializeField]
     [SyncVar]

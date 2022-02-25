@@ -2652,7 +2652,7 @@ MonoBehaviour:
   inGameNetworkTransfer: {fileID: 1981837358}
   playerStartTransform1: {fileID: 418910382}
   playerStartTransform2: {fileID: 103356071}
-  BossFilePath: Prefabs/Boss
+  BossEnemyID: 7
   BossGeneratePos: {x: 15, y: 0, z: 0}
   BossAppearPos: {x: 5, y: 0, z: 0}
 --- !u!4 &1766594362

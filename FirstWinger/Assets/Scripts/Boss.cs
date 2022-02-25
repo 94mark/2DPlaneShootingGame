@@ -5,6 +5,9 @@ using UnityEngine.Networking;
 
 public class Boss : Enemy
 {
+    const float FireTransformRotationStart = -30.0f;
+    const float FireTransformRotationInterval = 15.0f;
+
     [SyncVar]
     bool needBattleMove = false;
 
@@ -18,11 +21,21 @@ public class Boss : Enemy
     [SyncVar]
     float BattleMoveLength;
 
+    [SyncVar]
+    [SerializeField]
+    Vector3 CurrentFireTransformRotation;
+
     protected override void SetBattleState()
     {
         base.SetBattleState();
         BattleMoveStartPos = transform.position;
         FireRemainCountPerOnetime = FireRemainCount;
+
+        //회전값 초기화
+        CurrentFireTransformRotation.z = FireTransformRotationStart;
+        Quaternion quat = Quaternion.identity;
+        quat.eulerAngles = CurrentFireTransformRotation;
+        FireTransform.localRotation = quat;
     }
 
     protected override void UpdateBattle()
@@ -38,6 +51,7 @@ public class Boss : Enemy
                 if (FireRemainCountPerOnetime > 0)
                 {
                     Fire();
+                    RotateFireTransform();
                     FireRemainCountPerOnetime--;
                 }
                 else
@@ -126,8 +140,29 @@ public class Boss : Enemy
         needBattleMove = false;
         MoveStartTime = Time.time;
         FireRemainCountPerOnetime = FireRemainCount;
-        
+        // 회전값을 초기화
+        CurrentFireTransformRotation.z = FireTransformRotationStart;
+        Quaternion quat = Quaternion.identity;
+        quat.eulerAngles = CurrentFireTransformRotation;
+        FireTransform.localRotation = quat;
+
         base.SetDirtyBit(1);
     }
 
+    void RotateFireTransform()
+    {
+        if (isServer)
+            RpcRotateFireTransform();        // Host 플레이어인경우 RPC로 보낸다
+    }
+
+    [ClientRpc]
+    public void RpcRotateFireTransform()
+    {
+        CurrentFireTransformRotation.z += FireTransformRotationInterval;
+        Quaternion quat = Quaternion.identity;
+        quat.eulerAngles = CurrentFireTransformRotation;
+        FireTransform.localRotation = quat;
+
+        base.SetDirtyBit(1);
+    }
 }
