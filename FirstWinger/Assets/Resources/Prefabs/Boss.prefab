@@ -127,7 +127,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 2888051033312622990}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fb6b6767b4ff1d44fafe9a417bceb80f, type: 3}
+  m_Script: {fileID: 11500000, guid: a5549473c1173c44a8add6688a355e70, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   MaxHP: 100
@@ -145,6 +145,7 @@ MonoBehaviour:
   filePath: 
   ItemDropRate: 0
   ItemDropID: 0
+  BattleMoveMax: 8
 --- !u!54 &3955402547222716415
 Rigidbody:
   m_ObjectHideFlags: 0
