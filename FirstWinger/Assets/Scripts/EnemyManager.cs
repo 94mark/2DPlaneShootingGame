@@ -124,5 +124,10 @@ public class EnemyManager : MonoBehaviour
 
         return contains;
     }
+
+    public int GetEnemyListCount()
+    {
+        return enemies.Count;
+    }
 }
 

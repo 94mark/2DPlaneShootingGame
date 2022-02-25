@@ -124,8 +124,8 @@ public class WarningPanel : BasePanel
     {
         Close();
 
-        //if (((FWNetworkManager)FWNetworkManager.singleton).isServer)
-        //    SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().SetRunningState();
+        if (((FWNetworkManager)FWNetworkManager.singleton).isServer)
+            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().SetRunningState();
     }
 
 }

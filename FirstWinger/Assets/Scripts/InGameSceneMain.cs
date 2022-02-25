@@ -213,6 +213,16 @@ public class InGameSceneMain : BaseSceneMain
         NetworkTransfer.RpcGameStart();
     }
 
+    public void ShowWarningUI()
+    {
+        NetworkTransfer.RpcShowWarningUI();
+    }
+
+    public void SetRunningState()
+    {
+        NetworkTransfer.RpcSetRunningState();
+    }
+
     public void GotoTitleScene()
     {
 
