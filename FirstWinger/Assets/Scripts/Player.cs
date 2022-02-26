@@ -62,17 +62,11 @@ public class Player : Actor
             RpcSetHost();
         }
 
-        Transform startTransform;
         if (Host)
-            startTransform = inGameSceneMain.PlayerStartTransform1;
-        else
-        {
-            startTransform = inGameSceneMain.PlayerStartTransform2;
+        {     
             MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
             meshRenderer.material = ClientPlayerMaterial;
         }
-
-        SetPosition(startTransform.position);
 
         if (actorInstanceID != 0)
             inGameSceneMain.ActorManager.Regist(actorInstanceID, this);
@@ -84,7 +78,7 @@ public class Player : Actor
     {
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
         GameObject go = Resources.Load<GameObject>(PlayerHUDPath);
-        GameObject goInstance = Instantiate<GameObject>(go, inGameSceneMain.DamageManager.CanvasTransform);
+        GameObject goInstance = Instantiate<GameObject>(go, Camera.main.WorldToScreenPoint(transform.position), Quaternion.identity, inGameSceneMain.DamageManager.CanvasTransform);
         PlayerHUD playerHUD = goInstance.GetComponent<PlayerHUD>();
         playerHUD.Initialize(this);
     }
