@@ -7,6 +7,8 @@ public class BulletManager : MonoBehaviour
     public const int PlayerBulletIndex = 0;
     public const int EnemyBulletIndex = 1;
     public const int PlayerBombIndex = 2;
+    public const int BossBulletIndex = 3;
+    public const int GuidedMissileIndex = 4;
 
     [SerializeField]
     PrefabCacheData[] bulletFiles;

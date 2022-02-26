@@ -294,6 +294,8 @@ MonoBehaviour:
   - {fileID: 6493951790473033537, guid: 28a2a4cafd31734438e9b27e2d703ff7, type: 3}
   - {fileID: 8899939092303556122, guid: e465a76e475d7fd4dabcd5247eb41c24, type: 3}
   - {fileID: 2888051033312622990, guid: 74974cbd014abf741a0b5aeaa84f3008, type: 3}
+  - {fileID: 5321588265087246984, guid: 8bc0476c089ad64499647c2db957c6cc, type: 3}
+  - {fileID: 5321588265087246984, guid: ef104cdc3c0f8d645ae56538e546a2d0, type: 3}
   m_CustomConfig: 0
   m_MaxConnections: 4
   m_ConnectionConfig:

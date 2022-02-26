@@ -2121,6 +2121,10 @@ MonoBehaviour:
     cacheCount: 30
   - filePath: Prefabs/Bomb
     cacheCount: 10
+  - filePath: Prefabs/BossBullet
+    cacheCount: 20
+  - filePath: Prefabs/GuidedMissile
+    cacheCount: 20
 --- !u!4 &1444865417
 Transform:
   m_ObjectHideFlags: 0
