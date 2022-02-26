@@ -84,6 +84,14 @@ public class Enemy : Actor
     [SyncVar]
     int ItemDropID;
 
+    protected virtual int BulletIndex
+    {
+        get
+        {
+            return BulletManager.EnemyBulletIndex;
+        }
+    }
+
     protected override void Initialize()
     {
         base.Initialize();

@@ -7,6 +7,7 @@ public class Boss : Enemy
 {
     const float FireTransformRotationStart = -30.0f;
     const float FireTransformRotationInterval = 15.0f;
+    const float ActionUpdateInterval = 1.0f;
 
     [SyncVar]
     bool needBattleMove = false;
@@ -24,6 +25,34 @@ public class Boss : Enemy
     [SyncVar]
     [SerializeField]
     Vector3 CurrentFireTransformRotation;
+
+    protected override int BulletIndex
+    {
+        get
+        {
+            return BulletManager.BossBulletIndex;
+        }
+    }
+
+    [SerializeField]
+    Transform[] MissileFireTransforms;
+
+    Player[] players;
+
+    Player[] Players
+    {
+        get
+        {
+            if (players == null)
+                players = GameObject.FindObjectsOfType<Player>();
+            return players;
+        }
+    }
+
+    bool SpecialAttack = false;
+
+    [SerializeField]
+    float MissileSpeed = 1;
 
     protected override void SetBattleState()
     {
@@ -46,12 +75,18 @@ public class Boss : Enemy
         }
         else
         {
-            if (Time.time - LastActionUpdateTime > 1.0f)
+            if (Time.time - LastActionUpdateTime > ActionUpdateInterval)
             {
                 if (FireRemainCountPerOnetime > 0)
                 {
-                    Fire();
-                    RotateFireTransform();
+                    if (SpecialAttack)
+                        FireChase();
+                    else
+                    {
+                        Fire();
+                        RotateFireTransform();
+                    }
+
                     FireRemainCountPerOnetime--;
                 }
                 else
@@ -145,6 +180,7 @@ public class Boss : Enemy
         Quaternion quat = Quaternion.identity;
         quat.eulerAngles = CurrentFireTransformRotation;
         FireTransform.localRotation = quat;
+        SpecialAttack = !SpecialAttack;
 
         base.SetDirtyBit(1);
     }
@@ -164,5 +200,27 @@ public class Boss : Enemy
         FireTransform.localRotation = quat;
 
         base.SetDirtyBit(1);
+    }
+
+    public void FireChase()
+    {
+        List<Player> alivePlayer = new List<Player>();
+        for(int i = 0; i < Players.Length; i++)
+        {
+            if(!Players[i].IsDead)
+            {
+                alivePlayer.Add(Players[i]);
+            }
+        }
+
+        int index = Random.Range(0, alivePlayer.Count);
+        int targetInstanceID = alivePlayer[index].ActorInstanceID;
+
+        GuidedMissile missile = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.GuidedMissileIndex) as GuidedMissile;
+        if (missile)
+        {
+            Transform missileFireTransform = MissileFireTransforms[MissileFireTransforms.Length - FireRemainCountPerOnetime];
+            missile.FireChase(targetInstanceID, actorInstanceID, missileFireTransform.position, missileFireTransform.right, MissileSpeed, Damage);
+        }
     }
 }
