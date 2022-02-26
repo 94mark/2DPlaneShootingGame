@@ -62,13 +62,13 @@ public class BulletManager : MonoBehaviour
         }
     }
 
-    public Bullet Generate(int index)
+    public Bullet Generate(int index, Vector3 position)
     {
         if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
             return null;
 
         string filePath = bulletFiles[index].filePath;
-        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Archive(filePath);
+        GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Archive(filePath, position);
 
         Bullet bullet = go.GetComponent<Bullet>();
 

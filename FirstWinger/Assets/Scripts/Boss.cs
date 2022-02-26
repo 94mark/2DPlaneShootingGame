@@ -216,10 +216,10 @@ public class Boss : Enemy
         int index = Random.Range(0, alivePlayer.Count);
         int targetInstanceID = alivePlayer[index].ActorInstanceID;
 
-        GuidedMissile missile = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.GuidedMissileIndex) as GuidedMissile;
+        Transform missileFireTransform = MissileFireTransforms[MissileFireTransforms.Length - FireRemainCountPerOnetime];
+        GuidedMissile missile = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletManager.GuidedMissileIndex, missileFireTransform.position) as GuidedMissile;
         if (missile)
-        {
-            Transform missileFireTransform = MissileFireTransforms[MissileFireTransforms.Length - FireRemainCountPerOnetime];
+        {            
             missile.FireChase(targetInstanceID, actorInstanceID, missileFireTransform.position, missileFireTransform.right, MissileSpeed, Damage);
         }
     }
