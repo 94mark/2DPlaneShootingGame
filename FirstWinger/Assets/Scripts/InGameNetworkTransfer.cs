@@ -19,7 +19,7 @@ public class InGameNetworkTransfer : NetworkBehaviour
     /// <summary>
     /// 게임을 시작하기전 대기시간
     /// </summary>
-    const float GameReadyInteval = 3.0f;
+    const float GameReadyInteval = 0.5f;
 
     [SyncVar]
     GameState currentGameState = GameState.None;
@@ -83,6 +83,8 @@ public class InGameNetworkTransfer : NetworkBehaviour
     [ClientRpc]
     public void RpcGameEnd(bool success)
     {
-        Debug.Log("RpcGameEnd success = " + success);
+        currentGameState = GameState.End;
+        GameEndPanel gameEndPanel = PanelManager.GetPanel(typeof(GameEndPanel)) as GameEndPanel;
+        gameEndPanel.ShowGameEnd(success);        
     }
 }

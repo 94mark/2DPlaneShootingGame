@@ -58,6 +58,11 @@ public class SceneController : MonoBehaviour
         SceneManager.sceneUnloaded += OnSceneUnloaded;
     }
 
+    public void LoadSceneImmediate(string sceneName)
+    {
+        SceneManager.LoadScene(sceneName);
+    }
+
     public void LoadScene(string sceneName)
     {
         StartCoroutine(LoadSceneAsync(sceneName, LoadSceneMode.Single));

@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class LoadingSceneMain : BaseSceneMain
 {
-    const float NextSceneInteval = 3.0f;
+    const float NextSceneInteval = 0.5f;
     const float TextUpdateInteval = 0.15f;
     const string LoadingTextValue = "Loading...";
 

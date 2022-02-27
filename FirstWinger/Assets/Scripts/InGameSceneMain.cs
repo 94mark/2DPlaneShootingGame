@@ -232,6 +232,8 @@ public class InGameSceneMain : BaseSceneMain
 
     public void GotoTitleScene()
     {
-
+        FWNetworkManager.Shutdown();
+        DestroyImmediate(SystemManager.Instance.gameObject);
+        SceneController.Instance.LoadSceneImmediate(SceneNameConstants.TitleScene);
     }
 }
