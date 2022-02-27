@@ -17,7 +17,7 @@ public class UIDamage : MonoBehaviour
     DamageState damageState = DamageState.None;
 
     const float SizeUpDuration = 0.1f;
-    const float DispalyDuration = 0.5f;
+    const float DisplayDuration = 0.5f;
     const float FadeOutDuration = 0.2f;
 
     [SerializeField]
@@ -79,7 +79,7 @@ public class UIDamage : MonoBehaviour
                 }
                 break;
             case DamageState.Display:
-                if (Time.time - DisplayStartTime > DispalyDuration)
+                if (Time.time - DisplayStartTime > DisplayDuration)
                 {
                     damageState = DamageState.FadeOut;
                     FadeOutStartTime = Time.time;

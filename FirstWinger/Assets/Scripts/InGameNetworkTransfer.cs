@@ -19,7 +19,7 @@ public class InGameNetworkTransfer : NetworkBehaviour
     /// <summary>
     /// 게임을 시작하기전 대기시간
     /// </summary>
-    const float GameReadyInteval = 0.5f;
+    const float GameReadyIntaval = 0.5f;
 
     [SyncVar]
     GameState currentGameState = GameState.None;
@@ -47,7 +47,7 @@ public class InGameNetworkTransfer : NetworkBehaviour
 
         if (currentGameState == GameState.Ready)
         {
-            if (currentTime - CountingStartTime > GameReadyInteval)
+            if (currentTime - CountingStartTime > GameReadyIntaval)
             {
                 SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().SquadronManager.StartGame();
                 currentGameState = GameState.Running;
@@ -65,6 +65,7 @@ public class InGameNetworkTransfer : NetworkBehaviour
         inGameSceneMain.EnemyManager.Prepare();
         inGameSceneMain.BulletManager.Prepare();
         inGameSceneMain.ItemBoxManager.Prepare();
+
     }
 
     [ClientRpc]
@@ -83,9 +84,10 @@ public class InGameNetworkTransfer : NetworkBehaviour
     [ClientRpc]
     public void RpcGameEnd(bool success)
     {
+        // 게임을 종료상태로 만들어 입력을 막는다
         currentGameState = GameState.End;
         GameEndPanel gameEndPanel = PanelManager.GetPanel(typeof(GameEndPanel)) as GameEndPanel;
-        gameEndPanel.ShowGameEnd(success);        
+        gameEndPanel.ShowGameEnd(success);
     }
 
     public void SetGameStateEnd()

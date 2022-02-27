@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 public class InGameSceneMain : BaseSceneMain
-{   
+{
     public GameState CurrentGameState
     {
         get
@@ -39,6 +39,7 @@ public class InGameSceneMain : BaseSceneMain
         {
             otherPlayer = value;
         }
+
     }
 
     GamePointAccumulator gamePointAccumulator = new GamePointAccumulator();
@@ -75,7 +76,6 @@ public class InGameSceneMain : BaseSceneMain
 
     [SerializeField]
     BulletManager bulletManager;
-
     public BulletManager BulletManager
     {
         get
@@ -86,7 +86,6 @@ public class InGameSceneMain : BaseSceneMain
 
     [SerializeField]
     DamageManager damageManager;
-
     public DamageManager DamageManager
     {
         get
@@ -97,7 +96,6 @@ public class InGameSceneMain : BaseSceneMain
 
     [SerializeField]
     ItemBoxManager itemBoxManager;
-
     public ItemBoxManager ItemBoxManager
     {
         get
@@ -107,7 +105,6 @@ public class InGameSceneMain : BaseSceneMain
     }
 
     PrefabCacheSystem enemyCacheSystem = new PrefabCacheSystem();
-
     public PrefabCacheSystem EnemyCacheSystem
     {
         get
@@ -117,7 +114,6 @@ public class InGameSceneMain : BaseSceneMain
     }
 
     PrefabCacheSystem bulletCacheSystem = new PrefabCacheSystem();
-
     public PrefabCacheSystem BulletCacheSystem
     {
         get
@@ -127,7 +123,6 @@ public class InGameSceneMain : BaseSceneMain
     }
 
     PrefabCacheSystem effectCacheSystem = new PrefabCacheSystem();
-
     public PrefabCacheSystem EffectCacheSystem
     {
         get
@@ -137,7 +132,6 @@ public class InGameSceneMain : BaseSceneMain
     }
 
     PrefabCacheSystem damageCacheSystem = new PrefabCacheSystem();
-
     public PrefabCacheSystem DamageCacheSystem
     {
         get
@@ -147,7 +141,6 @@ public class InGameSceneMain : BaseSceneMain
     }
 
     PrefabCacheSystem itemBoxCacheSystem = new PrefabCacheSystem();
-
     public PrefabCacheSystem ItemBoxCacheSystem
     {
         get
@@ -155,6 +148,7 @@ public class InGameSceneMain : BaseSceneMain
             return itemBoxCacheSystem;
         }
     }
+
 
     [SerializeField]
     SquadronManager squadronManager;
@@ -166,6 +160,7 @@ public class InGameSceneMain : BaseSceneMain
             return squadronManager;
         }
     }
+
 
     [SerializeField]
     Transform mainBGQuadTransform;
@@ -181,7 +176,7 @@ public class InGameSceneMain : BaseSceneMain
     [SerializeField]
     InGameNetworkTransfer inGameNetworkTransfer;
 
-    
+
     InGameNetworkTransfer NetworkTransfer
     {
         get
@@ -213,12 +208,13 @@ public class InGameSceneMain : BaseSceneMain
     {
         base.UpdateScene();
 
-        if(CurrentGameState == GameState.Running)
+        if (CurrentGameState == GameState.Running)
         {
-            if(Hero != null && OtherPlayer != null)
+            if (Hero != null && OtherPlayer != null)
             {
                 if (Hero.IsDead && OtherPlayer.IsDead)
                 {
+                    // 두번진입하지 않도록 강제로 게임종료 셋팅
                     NetworkTransfer.SetGameStateEnd();
                     OnGameEnd(false);
                 }
@@ -235,6 +231,7 @@ public class InGameSceneMain : BaseSceneMain
     {
         NetworkTransfer.RpcShowWarningUI();
     }
+
 
     public void SetRunningState()
     {
@@ -257,14 +254,17 @@ public class InGameSceneMain : BaseSceneMain
 
     public void OnGameEnd(bool success)
     {
-        if(((FWNetworkManager)FWNetworkManager.singleton).isServer)
+        if (((FWNetworkManager)FWNetworkManager.singleton).isServer)
             NetworkTransfer.RpcGameEnd(success);
     }
 
     public void GotoTitleScene()
     {
+        // 네트워크를 끝낸다
         FWNetworkManager.Shutdown();
+        // 시스템 매니저를 파괴
         DestroyImmediate(SystemManager.Instance.gameObject);
         SceneController.Instance.LoadSceneImmediate(SceneNameConstants.TitleScene);
+
     }
 }

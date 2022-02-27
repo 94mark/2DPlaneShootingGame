@@ -232,8 +232,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   enemyTable: {fileID: 1748622192}
-  itemTable: {fileID: 0}
-  itemDropTable: {fileID: 0}
+  itemTable: {fileID: 1042348307}
+  itemDropTable: {fileID: 422303129}
   connectionInfo:
     Host: 0
     IPAddress: 

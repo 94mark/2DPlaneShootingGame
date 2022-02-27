@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
+
 public class Bullet : NetworkBehaviour
 {
-    const float LifeTime = 15.0f; // 총알 생존 시간
+    const float LifeTime = 15.0f;    // 총알의 생존 시간
 
     [SyncVar]
     [SerializeField]
@@ -16,24 +17,23 @@ public class Bullet : NetworkBehaviour
     protected float Speed = 0.0f;
 
     [SyncVar]
-    protected bool NeedMove = false; //이동 플래그
+    protected bool NeedMove = false; // 이동플래그
 
     [SyncVar]
     protected float FiredTime;
 
     [SyncVar]
-    bool Hited = false; //부딪혔는지 플래그
+    bool Hited = false; // 부딛혔는지 플래그
 
     [SyncVar]
     [SerializeField]
     protected int Damage = 1;
 
-    //[SerializeField]
-    //Actor Owner;  //NetworkBehaviour 상속 클래스라 [SyncVar]가 안됨
 
     [SyncVar]
     [SerializeField]
     int OwnerInstanceID;
+
 
     [SyncVar]
     [SerializeField]
@@ -82,9 +82,11 @@ public class Bullet : NetworkBehaviour
         if (!NeedMove)
             return;
 
+
         Vector3 moveVector = MoveDirection.normalized * Speed * Time.deltaTime;
         moveVector = AdjustMove(moveVector);
         transform.position += moveVector;
+
     }
 
     void InternelFire(int ownerInstanceID, Vector3 direction, float speed, int damage)
@@ -132,8 +134,10 @@ public class Bullet : NetworkBehaviour
 
     protected Vector3 AdjustMove(Vector3 moveVector)
     {
+        // 레이캐스트 힛 초기화
         RaycastHit hitInfo;
-        if(Physics.Linecast(transform.position, transform.position + moveVector, out hitInfo))
+
+        if (Physics.Linecast(transform.position, transform.position + moveVector, out hitInfo))
         {
             int colliderLayer = hitInfo.collider.gameObject.layer;
             if (colliderLayer != LayerMask.NameToLayer("Enemy") && colliderLayer != LayerMask.NameToLayer("Player"))
@@ -146,7 +150,6 @@ public class Bullet : NetworkBehaviour
             moveVector = hitInfo.point - transform.position;
             OnBulletCollision(hitInfo.collider);
         }
-
         return moveVector;
     }
 
@@ -162,11 +165,11 @@ public class Bullet : NetworkBehaviour
         }
 
         Actor owner = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ActorManager.GetActor(OwnerInstanceID);
-        if (owner == null)
+        if (owner == null)  // 호스트나 클라이언트중 한쪽이 끊어졌을때 발생할 수 있음
             return false;
 
         Actor actor = collider.GetComponentInParent<Actor>();
-        if(actor == null)
+        if (actor == null)
             return false;
 
         if (actor.IsDead || actor.gameObject.layer == owner.gameObject.layer)
@@ -179,7 +182,7 @@ public class Bullet : NetworkBehaviour
 
         Hited = true;
         NeedMove = false;
-
+        //
         GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectManager.GenerateEffect(EffectManager.BulletDisappearFxIndex, transform.position);
         go.transform.localScale = new Vector3(0.2f, 0.2f, 0.2f);
         Disappear();
@@ -198,14 +201,13 @@ public class Bullet : NetworkBehaviour
 
     bool ProcessDisappearCondition()
     {
-        if(transform.position.x > 15.0f || transform.position.x < -15.0f
+        if (transform.position.x > 15.0f || transform.position.x < -15.0f
             || transform.position.y > 15.0f || transform.position.y < -15.0f)
         {
             Disappear();
             return true;
         }
-
-        else if(Time.time - FiredTime > LifeTime)
+        else if (Time.time - FiredTime > LifeTime)
         {
             Disappear();
             return true;

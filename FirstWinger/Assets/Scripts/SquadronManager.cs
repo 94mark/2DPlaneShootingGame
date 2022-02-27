@@ -47,6 +47,7 @@ public class SquadronManager : MonoBehaviour
 
     public void StartGame()
     {
+
         GameStartedTime = Time.time;
         ScheduleIndex = 0;
         running = true;
@@ -57,14 +58,15 @@ public class SquadronManager : MonoBehaviour
     {
         if (!running)
             return;
+
         SquadronScheduleDataStruct data = squadronScheduleTable.GetScheduleData(ScheduleIndex);
 
-        if(Time.time - GameStartedTime >= data.GenerateTime)
+        if (Time.time - GameStartedTime >= data.GenerateTime)
         {
             GenerateSquadron(squadronDatas[data.SquadronID]);
             ScheduleIndex++;
 
-            if(ScheduleIndex >= squadronScheduleTable.GetDataCount())
+            if (ScheduleIndex >= squadronScheduleTable.GetDataCount())
             {
                 OnAllSquadronGenerated();
                 return;
@@ -76,7 +78,7 @@ public class SquadronManager : MonoBehaviour
     {
         Debug.Log("GenerateSquadron : " + ScheduleIndex);
 
-        for(int i = 0; i < table.GetCount(); i++)
+        for (int i = 0; i < table.GetCount(); i++)
         {
             SquadronMemberStruct squadronMember = table.GetSquadronMember(i);
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.GenerateEnemy(squadronMember);
@@ -90,4 +92,7 @@ public class SquadronManager : MonoBehaviour
 
         AllSquadronGenerated = true;
     }
+
+
+
 }

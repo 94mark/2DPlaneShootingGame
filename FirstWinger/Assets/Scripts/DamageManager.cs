@@ -26,29 +26,30 @@ public class DamageManager : MonoBehaviour
 
     Dictionary<string, GameObject> FileCache = new Dictionary<string, GameObject>();
 
+
     // Start is called before the first frame update
     void Start()
     {
-        Prepare();    
+        Prepare();
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public GameObject Load(string resourcePath)
     {
         GameObject go = null;
 
-        if (FileCache.ContainsKey(resourcePath)) //캐시 확인
+        if (FileCache.ContainsKey(resourcePath))   // 캐시 확인
         {
             go = FileCache[resourcePath];
         }
         else
         {
-            //캐시에 없으므로 로드
+            // 캐시에 없으므로 로드
             go = Resources.Load<GameObject>(resourcePath);
             if (!go)
             {
@@ -58,12 +59,13 @@ public class DamageManager : MonoBehaviour
             // 로드 후 캐시에 적재
             FileCache.Add(resourcePath, go);
         }
+
         return go;
     }
 
     public void Prepare()
     {
-        for(int i = 0; i < Files.Length; i++)
+        for (int i = 0; i < Files.Length; i++)
         {
             GameObject go = Load(Files[i].filePath);
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageCacheSystem.GenerateCache(Files[i].filePath, go, Files[i].cacheCount, canvasTransform);
@@ -72,7 +74,7 @@ public class DamageManager : MonoBehaviour
 
     public GameObject Generate(int index, Vector3 position, int damageValue, Color textColor)
     {
-        if(index < 0 || index >= Files.Length)
+        if (index < 0 || index >= Files.Length)
         {
             Debug.LogError("Generate error! out of range! index = " + index);
             return null;
@@ -80,7 +82,7 @@ public class DamageManager : MonoBehaviour
 
         string filePath = Files[index].filePath;
         GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().DamageCacheSystem.Archive(filePath, Camera.main.WorldToScreenPoint(position));
-        
+
         UIDamage damage = go.GetComponent<UIDamage>();
         damage.FilePath = filePath;
         damage.ShowDamage(damageValue, textColor);

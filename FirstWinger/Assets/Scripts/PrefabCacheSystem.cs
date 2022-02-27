@@ -4,20 +4,19 @@ using UnityEngine;
 using UnityEngine.Networking;
 
 [System.Serializable]
-
 public class PrefabCacheData
 {
     public string filePath;
     public int cacheCount;
 }
 
-public class PrefabCacheSystem 
+public class PrefabCacheSystem
 {
     Dictionary<string, Queue<GameObject>> Caches = new Dictionary<string, Queue<GameObject>>();
 
     public void GenerateCache(string filePath, GameObject gameObject, int cacheCount, Transform parentTransform = null)
     {
-        if(Caches.ContainsKey(filePath))
+        if (Caches.ContainsKey(filePath))
         {
             Debug.LogWarning("Already cache generated! filePath = " + filePath);
             return;
@@ -25,7 +24,7 @@ public class PrefabCacheSystem
         else
         {
             Queue<GameObject> queue = new Queue<GameObject>();
-            for(int i = 0; i < cacheCount; i++)
+            for (int i = 0; i < cacheCount; i++)
             {
                 GameObject go = Object.Instantiate<GameObject>(gameObject, parentTransform);
 
@@ -33,25 +32,28 @@ public class PrefabCacheSystem
                 queue.Enqueue(go);
 
                 Enemy enemy = go.GetComponent<Enemy>();
-                if(enemy != null)
+                if (enemy != null)
                 {
                     enemy.FilePath = filePath;
                     NetworkServer.Spawn(go);
+
+                    //enemy.RpcSetActive(false);
                 }
 
                 Bullet bullet = go.GetComponent<Bullet>();
-                if(bullet != null)
+                if (bullet != null)
                 {
                     bullet.FilePath = filePath;
                     NetworkServer.Spawn(go);
                 }
 
                 ItemBox item = go.GetComponent<ItemBox>();
-                if(item != null)
+                if (item != null)
                 {
                     item.FilePath = filePath;
                     NetworkServer.Spawn(go);
                 }
+
             }
 
             Caches.Add(filePath, queue);
@@ -60,23 +62,22 @@ public class PrefabCacheSystem
 
     public GameObject Archive(string filePath, Vector3 position)
     {
-        if(!Caches.ContainsKey(filePath))
+        if (!Caches.ContainsKey(filePath))
         {
-            Debug.LogError("Archive Error! no Cache generated! filePath = " + filePath);
+            Debug.LogError("Archive Errror! no Cache generated! filePath = " + filePath);
             return null;
         }
 
-        if(Caches[filePath].Count == 0)
+        if (Caches[filePath].Count == 0)
         {
-            Debug.LogWarning("Archive problems! not enough Count");
+            Debug.LogWarning("Archive problem! not enough Count");
             return null;
         }
 
         GameObject go = Caches[filePath].Dequeue();
         go.SetActive(true);
         go.transform.position = position;
-
-        if(((FWNetworkManager)FWNetworkManager.singleton).isServer)
+        if (((FWNetworkManager)FWNetworkManager.singleton).isServer)
         {
             Enemy enemy = go.GetComponent<Enemy>();
             if (enemy != null)
@@ -93,7 +94,7 @@ public class PrefabCacheSystem
             }
 
             ItemBox item = go.GetComponent<ItemBox>();
-            if( item != null)
+            if (item != null)
             {
                 item.RpcSetPosition(position);
                 item.RpcSetActive(true);
@@ -105,14 +106,13 @@ public class PrefabCacheSystem
 
     public bool Restore(string filePath, GameObject gameObject)
     {
-        if(!Caches.ContainsKey(filePath))
+        if (!Caches.ContainsKey(filePath))
         {
-            Debug.LogError("Restore Error! no Cache generated! filePath = " + filePath);
+            Debug.LogError("Restore Errror! no Cache generated! filePath = " + filePath);
             return false;
         }
 
         gameObject.SetActive(false);
-
         if (((FWNetworkManager)FWNetworkManager.singleton).isServer)
         {
             Enemy enemy = gameObject.GetComponent<Enemy>();
@@ -141,7 +141,7 @@ public class PrefabCacheSystem
     public void Add(string filePath, GameObject gameObject)
     {
         Queue<GameObject> queue;
-        if(Caches.ContainsKey(filePath))
+        if (Caches.ContainsKey(filePath))
         {
             queue = Caches[filePath];
         }
@@ -153,5 +153,4 @@ public class PrefabCacheSystem
 
         queue.Enqueue(gameObject);
     }
-
 }

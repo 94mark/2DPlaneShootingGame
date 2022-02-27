@@ -41,10 +41,9 @@ public class EnemyManager : MonoBehaviour
         string FilePath = SystemManager.Instance.EnemyTable.GetEnemy(data.EnemyID).FilePath;
         GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyCacheSystem.Archive(FilePath, new Vector3(data.GeneratePointX, data.GeneratePointY, 0));
 
-        Enemy enemy = go.GetComponent<Enemy>();     
+        Enemy enemy = go.GetComponent<Enemy>();
         enemy.Reset(data);
         enemy.AddList();
-
         return true;
     }
 
@@ -67,7 +66,6 @@ public class EnemyManager : MonoBehaviour
 
     public void Prepare()
     {
-
         if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
             return;
 
@@ -101,10 +99,10 @@ public class EnemyManager : MonoBehaviour
         List<Enemy> contains = new List<Enemy>();
 
         Collider enemyCollider;
-        for(int i = 0; i < enemies.Count; i++)
+        for (int i = 0; i < enemies.Count; i++)
         {
             enemyCollider = enemies[i].GetComponentInChildren<Collider>();
-            if(enemyCollider == null)
+            if (enemyCollider == null)
             {
                 Debug.LogError(enemies[i] + name + " model is not correct!");
                 continue;
@@ -122,4 +120,3 @@ public class EnemyManager : MonoBehaviour
         return enemies.Count;
     }
 }
-

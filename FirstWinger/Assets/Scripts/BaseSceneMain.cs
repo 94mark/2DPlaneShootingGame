@@ -8,10 +8,11 @@ public class BaseSceneMain : MonoBehaviour
     {
         OnAwake();
     }
+
     // Start is called before the first frame update
     void Start()
     {
-        OnStart();   
+        OnStart();
     }
 
     // Update is called once per frame
@@ -35,18 +36,19 @@ public class BaseSceneMain : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 외부에서 초기화 호출
+    /// </summary>
     public virtual void Initialize()
     {
-
     }
 
     protected virtual void UpdateScene()
     {
-
     }
 
     protected virtual void Terminate()
     {
-
     }
+
 }

@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 using System.IO;
 
 public class TableLoader<TMarshalStruct> : MonoBehaviour
@@ -14,7 +14,7 @@ public class TableLoader<TMarshalStruct> : MonoBehaviour
     public bool Load()
     {
         TextAsset textAsset = Resources.Load<TextAsset>(FilePath);
-        if(textAsset == null)
+        if (textAsset == null)
         {
             Debug.LogError("Load Failed! filePath = " + FilePath);
             return false;
@@ -27,13 +27,13 @@ public class TableLoader<TMarshalStruct> : MonoBehaviour
 
     void ParseTable(string text)
     {
-        StringReader reader = new StringReader(text); //System.IO.StringReader
+        StringReader reader = new StringReader(text);   // System.IO.StringReader
 
         string line = null;
         bool fieldRead = false;
-        while((line = reader.ReadLine()) != null) //파일 끝날 때까지 계속 레코드 파싱 
+        while ((line = reader.ReadLine()) != null)      // * 파일 끝날 때까지 계속 레코드 파싱
         {
-            if(!fieldRead)
+            if (!fieldRead)
             {
                 fieldRead = true;
                 continue;
@@ -48,4 +48,5 @@ public class TableLoader<TMarshalStruct> : MonoBehaviour
     {
 
     }
+
 }

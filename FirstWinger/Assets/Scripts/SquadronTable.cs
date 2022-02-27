@@ -5,7 +5,6 @@ using System.Runtime.InteropServices;
 
 [System.Serializable]
 [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)]
-
 public struct SquadronMemberStruct
 {
     public int index;

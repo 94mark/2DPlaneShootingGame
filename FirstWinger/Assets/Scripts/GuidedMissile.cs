@@ -110,5 +110,6 @@ public class GuidedMissile : Bullet
         Quaternion quat = Quaternion.identity;
         quat.eulerAngles = rotateVector;
         transform.rotation = quat;
+
     }
 }

@@ -15,38 +15,39 @@ public class BulletManager : MonoBehaviour
 
     Dictionary<string, GameObject> FileCache = new Dictionary<string, GameObject>();
 
+
     // Start is called before the first frame update
     void Start()
     {
-        
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public GameObject Load(string resourcePath)
     {
         GameObject go = null;
 
-        if(FileCache.ContainsKey(resourcePath)) //캐시 확인
+        if (FileCache.ContainsKey(resourcePath))   // 캐시 확인
         {
             go = FileCache[resourcePath];
         }
         else
         {
-            //캐시에 없으므로 로드
+            // 캐시에 없으므로 로드
             go = Resources.Load<GameObject>(resourcePath);
-            if(!go)
+            if (!go)
             {
                 Debug.LogError("Load error! path = " + resourcePath);
                 return null;
             }
-            //로드 후 캐시에 적재
+            // 로드 후 캐시에 적재
             FileCache.Add(resourcePath, go);
         }
+
         return go;
     }
 
@@ -55,7 +56,7 @@ public class BulletManager : MonoBehaviour
         if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
             return;
 
-        for(int i = 0; i < bulletFiles.Length; i++)
+        for (int i = 0; i < bulletFiles.Length; i++)
         {
             GameObject go = Load(bulletFiles[i].filePath);
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.GenerateCache(bulletFiles[i].filePath, go, bulletFiles[i].cacheCount, this.transform);
@@ -83,4 +84,5 @@ public class BulletManager : MonoBehaviour
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletCacheSystem.Restore(bullet.FilePath, bullet.gameObject);
         return true;
     }
+
 }

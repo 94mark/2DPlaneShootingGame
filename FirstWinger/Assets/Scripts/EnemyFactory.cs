@@ -7,40 +7,42 @@ public class EnemyFactory : MonoBehaviour
     public const string EnemyPath = "Prefabs/Enemy";
 
     Dictionary<string, GameObject> EnemyFileCache = new Dictionary<string, GameObject>();
+
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
-    //로드된 프리팹은 파일 경로를 키로 사용하여 캐싱
+
     public GameObject Load(string resourcePath)
     {
         GameObject go = null;
 
-        if(EnemyFileCache.ContainsKey(resourcePath)) //캐시 확인
+        if (EnemyFileCache.ContainsKey(resourcePath))   // 캐시 확인
         {
             go = EnemyFileCache[resourcePath];
         }
         else
         {
-            //캐시에 없으므로 로드
+            // 캐시에 없으므로 로드
             go = Resources.Load<GameObject>(resourcePath);
-            if(!go)
+            if (!go)
             {
                 Debug.LogError("Load error! path = " + resourcePath);
                 return null;
             }
-            //로드 후 캐시에 적재
+            // 로드 후 캐시에 적재
             EnemyFileCache.Add(resourcePath, go);
         }
 
         return go;
     }
+
 }

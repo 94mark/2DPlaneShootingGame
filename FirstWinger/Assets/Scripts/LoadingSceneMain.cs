@@ -5,8 +5,11 @@ using UnityEngine.UI;
 
 public class LoadingSceneMain : BaseSceneMain
 {
-    const float NextSceneInteval = 0.5f;
-    const float TextUpdateInteval = 0.15f;
+    /// <summary>
+    /// 다음 Scene 이동전 대기시간
+    /// </summary>
+    const float NextSceneIntaval = 0.5f;
+    const float TextUpdateIntaval = 0.15f;
     const string LoadingTextValue = "Loading...";
 
     [SerializeField]
@@ -28,20 +31,22 @@ public class LoadingSceneMain : BaseSceneMain
         base.UpdateScene();
 
         float currentTime = Time.time;
-        if(currentTime - LastUpdateTime > TextUpdateInteval)
+        if (currentTime - LastUpdateTime > TextUpdateIntaval)
         {
+
             LoadingText.text = LoadingTextValue.Substring(0, TextIndex + 1);
 
             TextIndex++;
-            if(TextIndex >= LoadingTextValue.Length)
+            if (TextIndex >= LoadingTextValue.Length)
             {
                 TextIndex = 0;
             }
 
+
             LastUpdateTime = currentTime;
         }
-
-        if(currentTime - SceneStartTime > NextSceneInteval)
+        //
+        if (currentTime - SceneStartTime > NextSceneIntaval)
         {
             if (!NextSceneCall)
                 GotoNextScene();
@@ -68,4 +73,5 @@ public class LoadingSceneMain : BaseSceneMain
 
         NextSceneCall = true;
     }
+
 }

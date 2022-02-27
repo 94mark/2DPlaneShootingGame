@@ -8,6 +8,7 @@ public class BGScrollData
     public Renderer RenderForScroll;
     public float Speed;
     public float OffsetX;
+
 }
 
 public class BGScroller : MonoBehaviour
@@ -15,6 +16,13 @@ public class BGScroller : MonoBehaviour
     [SerializeField]
     BGScrollData[] ScrollDatas;
 
+    // Start is called before the first frame update
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
     void Update()
     {
         UpdateScroll();
@@ -22,10 +30,11 @@ public class BGScroller : MonoBehaviour
 
     void UpdateScroll()
     {
-        for(int i = 0; i < ScrollDatas.Length; i++)
+        for (int i = 0; i < ScrollDatas.Length; i++)
         {
             SetTextureOffset(ScrollDatas[i]);
         }
+
     }
 
     void SetTextureOffset(BGScrollData scrollData)
@@ -38,4 +47,5 @@ public class BGScroller : MonoBehaviour
 
         scrollData.RenderForScroll.material.SetTextureOffset("_MainTex", Offset);
     }
+
 }

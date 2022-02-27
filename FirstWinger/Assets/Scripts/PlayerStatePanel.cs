@@ -33,15 +33,16 @@ public class PlayerStatePanel : BasePanel
     public override void InitializePanel()
     {
         base.InitializePanel();
-        HPGage.SetHP(100, 100); //가득찬 상태로 초기화
+        HPGage.SetHP(100, 100); // 가득찬 상태로 초기화
     }
 
     public override void UpdatePanel()
     {
         base.UpdatePanel();
-        if(Hero != null)
+        if (Hero != null)
         {
             HPGage.SetHP(Hero.HPCurrent, Hero.HPMax);
         }
+
     }
 }

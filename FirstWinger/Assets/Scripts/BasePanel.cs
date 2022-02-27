@@ -8,6 +8,7 @@ public class BasePanel : MonoBehaviour
     {
         InitializePanel();
     }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -23,14 +24,6 @@ public class BasePanel : MonoBehaviour
     private void OnDestroy()
     {
         DestroyPanel();
-    }
-
-    private void OnGUI()
-    {
-        if(GUILayout.Button("Close"))
-        {
-            Close();
-        }
     }
 
     public virtual void InitializePanel()
@@ -57,4 +50,5 @@ public class BasePanel : MonoBehaviour
     {
         gameObject.SetActive(false);
     }
+
 }

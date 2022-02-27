@@ -40,13 +40,16 @@ public class ItemBox : NetworkBehaviour
         }
     }
 
+    /// <summary>
+    /// ¿Ãµø«“ ∫§≈Õ
+    /// </summary>
     [SerializeField]
     Vector3 MoveVector = Vector3.zero;
 
     // Start is called before the first frame update
     void Start()
     {
-        if(!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+        if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
         {
             InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
             transform.SetParent(inGameSceneMain.ItemBoxManager.transform);
@@ -62,7 +65,7 @@ public class ItemBox : NetworkBehaviour
         UpdateMove();
     }
 
-    void  UpdateRotate()
+    void UpdateRotate()
     {
         Vector3 eulerAngles = SelfTransform.localRotation.eulerAngles;
         eulerAngles += RotateAngle;
@@ -90,48 +93,44 @@ public class ItemBox : NetworkBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if(other.gameObject.layer != LayerMask.NameToLayer("Player"))
+        if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
+            return;
+
+        OnItemCollision(other);
+    }
+
+    void OnItemCollision(Collider other)
+    {
+        Player player = other.GetComponentInParent<Player>();
+        if (player == null)
+            return;
+
+        if (player.IsDead)
+            return;
+
+        if (player.isLocalPlayer)
         {
-            if (other.gameObject.layer != LayerMask.NameToLayer("Player"))
-                return;
 
-            OnItemCollision(other);
-        }
-
-        void OnItemCollision(Collider other)
-        {
-            Player player = other.GetComponentInParent<Player>();
-            if (player == null)
-                return;
-
-            if (player.IsDead)
-                return;
-
-            if(player.isLocalPlayer)
+            switch (itemEffect)
             {
-                switch(itemEffect)
-                {
-                    case ItemEffect.HPRecovery:
-                        player.IncreaseHP(HPRecoveryValue);
-                        break;
-
-                    case ItemEffect.ScoreAdd:
-                        InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
-                        inGameSceneMain.GamePointAccumulator.Accumulate(ScoreAddValue);
-                        break;
-
-                    case ItemEffect.UsableItemAdd:
-                        player.IncreaseUsableItem();
-                        break;
-                }
+                case ItemEffect.HPRecovery:
+                    player.IncreaseHP(HPRecoveryValue);
+                    break;
+                case ItemEffect.ScoreAdd:
+                    InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
+                    inGameSceneMain.GamePointAccumulator.Accumulate(ScoreAddValue);
+                    break;
+                case ItemEffect.UsableItemAdd:
+                    player.IncreaseUsableItem();
+                    break;
             }
-
-            Disappear();
         }
 
-        void Disappear()
-        {
-            SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ItemBoxManager.Remove(this);
-        }
+        Disappear();
+    }
+
+    void Disappear()
+    {
+        SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ItemBoxManager.Remove(this);
     }
 }

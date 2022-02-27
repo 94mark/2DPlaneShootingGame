@@ -7,22 +7,35 @@ public class Enemy : Actor
 {
     public enum State : int
     {
-        None = -1,
-        Ready = 0,
-        Appear,
-        Battle,
-        Dead,
-        Disappear
+        None = -1,  // 사용전
+        Ready = 0,  // 준비 완료
+        Appear,     // 등장
+        Battle,     // 전투중
+        Dead,       // 사망
+        Disappear,  // 퇴장
     }
 
+    /// <summary>
+    /// 현재 상태값
+    /// </summary>
     [SerializeField]
     [SyncVar]
     State CurrentState = State.None;
 
+    /// <summary>
+    /// 최고 속도
+    /// </summary>
     protected const float MaxSpeed = 10.0f;
 
+    /// <summary>
+    /// 최고 속도에 이르는 시간
+    /// </summary>
     const float MaxSpeedTime = 0.5f;
 
+
+    /// <summary>
+    /// 목표점
+    /// </summary>
     [SerializeField]
     [SyncVar]
     protected Vector3 TargetPosition;
@@ -31,11 +44,14 @@ public class Enemy : Actor
     [SyncVar]
     protected float CurrentSpeed;
 
+    /// <summary>
+    /// 방향을 고려한 속도 벡터
+    /// </summary>
     [SyncVar]
     protected Vector3 CurrentVelocity;
 
     [SyncVar]
-    protected float MoveStartTime = 0.0f;    
+    protected float MoveStartTime = 0.0f; // 이동시작 시간
 
     [SerializeField]
     protected Transform FireTransform;
@@ -72,17 +88,17 @@ public class Enemy : Actor
     }
 
     [SyncVar]
-    Vector3 AppearPoint;
+    Vector3 AppearPoint;      // 입장시 도착 위치
     [SyncVar]
-    Vector3 DisappearPoint;
+    Vector3 DisappearPoint;      // 퇴장시 목표 위치
 
     [SerializeField]
     [SyncVar]
-    float ItemDropRate;
+    float ItemDropRate;     // 아이템 생성 확률
 
     [SerializeField]
     [SyncVar]
-    int ItemDropID;
+    int ItemDropID;         // 아이템 생성시 참조할 ItemDrop 테이블의 인덱스
 
     protected virtual int BulletIndex
     {
@@ -95,11 +111,10 @@ public class Enemy : Actor
     protected override void Initialize()
     {
         base.Initialize();
-        //Debug.Log("Enemy : Initialize");
 
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
-        if(!((FWNetworkManager)FWNetworkManager.singleton).isServer)
-        {            
+        if (!((FWNetworkManager)FWNetworkManager.singleton).isServer)
+        {
             transform.SetParent(inGameSceneMain.EnemyManager.transform);
             inGameSceneMain.EnemyCacheSystem.Add(FilePath, gameObject);
             gameObject.SetActive(false);
@@ -109,9 +124,11 @@ public class Enemy : Actor
             inGameSceneMain.ActorManager.Regist(actorInstanceID, this);
     }
 
+    // Update is called once per frame
     protected override void UpdateActor()
-    {      
-        switch(CurrentState)
+    {
+        //
+        switch (CurrentState)
         {
             case State.None:
                 break;
@@ -131,36 +148,40 @@ public class Enemy : Actor
             default:
                 Debug.LogError("Undefined State!");
                 break;
-        }        
+        }
     }
 
     protected void UpdateSpeed()
     {
+        // CurrentSpeed 에서 MaxSpeed 에 도달하는 비율을 흐른 시간많큼 계산
         CurrentSpeed = Mathf.Lerp(CurrentSpeed, MaxSpeed, (Time.time - MoveStartTime) / MaxSpeedTime);
     }
 
     void UpdateMove()
     {
         float distance = Vector3.Distance(TargetPosition, transform.position);
-        if(distance == 0)
+        if (distance == 0)
         {
             Arrived();
             return;
         }
+
+        // 이동벡터 계산. 양 벡터의 차를 통해 이동벡터를 구한후 nomalized 로 단위벡터를 구한다. 속도를 곱해 현재 이동할 벡터를 계산
         CurrentVelocity = (TargetPosition - transform.position).normalized * CurrentSpeed;
 
-        //속도 = 거리 / 시간 이므로 시간 = 거리 / 속도
+        // 자연스러운 감속으로 목표지점에 도착할 수 있도록 계산
+        // 속도 = 거리 / 시간 이므로 시간 = 거리/속도
         transform.position = Vector3.SmoothDamp(transform.position, TargetPosition, ref CurrentVelocity, distance / CurrentSpeed, MaxSpeed);
     }
 
     void Arrived()
     {
-        CurrentSpeed = 0.0f;
-        if(CurrentState == State.Appear)
+        CurrentSpeed = 0.0f;    // 도착했으므로 속도는 0
+        if (CurrentState == State.Appear)
         {
             SetBattleState();
         }
-        else //if (CurrentState = State.Disappear)
+        else // if (CurrentState == State.Disappear)
         {
             CurrentState = State.None;
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.RemoveEnemy(this);
@@ -175,13 +196,17 @@ public class Enemy : Actor
 
     public void Reset(SquadronMemberStruct data)
     {
-        if(isServer)
+        // 정상적으로 NetworkBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때
+        //CmdReset(data);
+
+        // MonoBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때의 꼼수
+        if (isServer)
         {
-            RpcReset(data);
+            RpcReset(data);        // Host 플레이어인경우 RPC로 보내고
         }
         else
         {
-            CmdReset(data);
+            CmdReset(data);        // Client 플레이어인경우 Cmd로 호스트로 보낸후 자신을 Self 동작
             if (isLocalPlayer)
                 ResetData(data);
         }
@@ -191,29 +216,29 @@ public class Enemy : Actor
     {
         EnemyStruct enemyStruct = SystemManager.Instance.EnemyTable.GetEnemy(data.EnemyID);
 
-        CurrentHp = MaxHP = enemyStruct.MaxHP;
-        Damage = enemyStruct.Damage;
-        crashDamage = enemyStruct.CrashDamage;
-        BulletSpeed = enemyStruct.BulletSpeed;
-        FireRemainCount = enemyStruct.FireRemainCount;
-        GamePoint = enemyStruct.GamePoint;
+        CurrentHp = MaxHP = enemyStruct.MaxHP;             // CurrentHP까지 다시 입력
+        Damage = enemyStruct.Damage;                       // 총알 데미지
+        crashDamage = enemyStruct.CrashDamage;             // 충돌 데미지
+        BulletSpeed = enemyStruct.BulletSpeed;             // 총알 속도
+        FireRemainCount = enemyStruct.FireRemainCount;     // 발사할 총알 갯수
+        GamePoint = enemyStruct.GamePoint;                 // 파괴시 얻을 점수
 
-        AppearPoint = new Vector3(data.AppearPointX, data.AppearPointY, 0);
-        DisappearPoint = new Vector3(data.DisappearPointX, data.DisappearPointY, 0);
+        AppearPoint = new Vector3(data.AppearPointX, data.AppearPointY, 0);             // 입장시 도착 위치 
+        DisappearPoint = new Vector3(data.DisappearPointX, data.DisappearPointY, 0);    // 퇴장시 목표 위치
 
-        ItemDropRate = enemyStruct.ItemDropRate;
-        ItemDropID = enemyStruct.ItemDropID;
+        ItemDropRate = enemyStruct.ItemDropRate;    // 아이템 생성 확률
+        ItemDropID = enemyStruct.ItemDropID;        // 아이템 Drop 테이블 참조 인덱스
 
         CurrentState = State.Ready;
         LastActionUpdateTime = Time.time;
-
-        isDead = false; //Enemy는 재사용되므로 초기화
+        //
+        isDead = false;      // Enemy는 재사용되므로 초기화시켜줘야 함
     }
 
     public void Appear(Vector3 targetPos)
     {
         TargetPosition = targetPos;
-        CurrentSpeed = MaxSpeed;
+        CurrentSpeed = MaxSpeed;    // 나타날때는 최고 스피드로 설정
 
         CurrentState = State.Appear;
         MoveStartTime = Time.time;
@@ -222,7 +247,7 @@ public class Enemy : Actor
     void Disappear(Vector3 targetPos)
     {
         TargetPosition = targetPos;
-        CurrentSpeed = 0.0f;
+        CurrentSpeed = 0.0f;           // 사라질때는 0부터 속도 증가
 
         CurrentState = State.Disappear;
         MoveStartTime = Time.time;
@@ -230,7 +255,7 @@ public class Enemy : Actor
 
     void UpdateReady()
     {
-        if(Time.time - LastActionUpdateTime > 1.0f)
+        if (Time.time - LastActionUpdateTime > 1.0f)
         {
             Appear(AppearPoint);
         }
@@ -238,9 +263,9 @@ public class Enemy : Actor
 
     protected virtual void UpdateBattle()
     {
-        if(Time.time - LastActionUpdateTime > 1.0f)
+        if (Time.time - LastActionUpdateTime > 1.0f)
         {
-            if(FireRemainCount > 0)
+            if (FireRemainCount > 0)
             {
                 Fire();
                 FireRemainCount--;
@@ -248,7 +273,7 @@ public class Enemy : Actor
             else
             {
                 Disappear(DisappearPoint);
-            }          
+            }
 
             LastActionUpdateTime = Time.time;
         }
@@ -259,22 +284,22 @@ public class Enemy : Actor
         Player player = other.GetComponentInParent<Player>();
         if (player)
         {
-            if(!player.IsDead)
+            if (!player.IsDead)
             {
                 BoxCollider box = ((BoxCollider)other);
                 Vector3 crashPos = player.transform.position + box.center;
                 crashPos.x += box.size.x * 0.5f;
 
                 player.OnCrash(CrashDamage, crashPos);
-            }                
-        }            
+            }
+        }
     }
 
     public void Fire()
     {
         Bullet bullet = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletIndex, FireTransform.position);
         if (bullet)
-            bullet.Fire(actorInstanceID, -FireTransform.right, BulletSpeed, Damage);        
+            bullet.Fire(actorInstanceID, -FireTransform.right, BulletSpeed, Damage);
     }
 
     protected override void OnDead()
@@ -341,11 +366,11 @@ public class Enemy : Actor
         InGameSceneMain inGameSceneMain = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>();
         inGameSceneMain.ItemBoxManager.Generate(ItemIndex, transform.position);
     }
-
+    //
     public void AddList()
     {
         if (isServer)
-            RpcAddList();
+            RpcAddList();        // Host 플레이어인경우 RPC로 보내고
     }
 
     [ClientRpc]
@@ -358,7 +383,7 @@ public class Enemy : Actor
     public void RemoveList()
     {
         if (isServer)
-            RpcRemoveList();
+            RpcRemoveList();        // Host 플레이어인경우 RPC로 보내고
     }
 
     [ClientRpc]
@@ -367,4 +392,5 @@ public class Enemy : Actor
         SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.RemoveList(this);
         base.SetDirtyBit(1);
     }
+
 }

@@ -6,6 +6,10 @@ using UnityEngine.Networking;
 public class Bomb : Bullet
 {
     const float MaxRotateTime = 30.0f;
+
+    /// <summary>
+    /// 최종 회전값
+    /// </summary>
     const float MaxRotateZ = 90.0f;
 
     [SerializeField]
@@ -15,7 +19,7 @@ public class Bomb : Bullet
     Vector3 Force;
 
     [SyncVar]
-    float RotateStartTime = 0.0f;
+    float RotateStartTime = 0.0f; // 회전을 시작한 시간
 
     [SyncVar]
     [SerializeField]
@@ -34,20 +38,20 @@ public class Bomb : Bullet
         if (CheckScreenBottom())
             return;
 
+
         UpdateRotate();
     }
 
     bool CheckScreenBottom()
     {
-        Transform mainBQQuadTransform = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().MainBGQuadTransform;
+        Transform mainBGQuadTransform = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().MainBGQuadTransform;
 
-        if(transform.position.y < -mainBQQuadTransform.localScale.y * 0.5f)
+        if (transform.position.y < -mainBGQuadTransform.localScale.y * 0.5f)
         {
             Vector3 newPos = transform.position;
-            newPos.y = -mainBQQuadTransform.localScale.y * 0.5f;
+            newPos.y = -mainBGQuadTransform.localScale.y * 0.5f;
             StopForExplosion(newPos);
             Explode();
-
             return true;
         }
 
@@ -58,8 +62,8 @@ public class Bomb : Bullet
     {
         transform.position = stopPos;
 
-        selfRigidbody.useGravity = false;
-        selfRigidbody.velocity = Vector3.zero;
+        selfRigidbody.useGravity = false;   // 중력 사용을 해제
+        selfRigidbody.velocity = Vector3.zero;  // Force를 초기화
         NeedMove = false;
     }
 
@@ -82,24 +86,28 @@ public class Bomb : Bullet
 
     void InternelAddForce(Vector3 force)
     {
-        selfRigidbody.velocity = Vector3.zero;
+        selfRigidbody.velocity = Vector3.zero;  // Force를 초기화
         selfRigidbody.AddForce(force);
         RotateStartTime = Time.time;
         CurrentRotateZ = 0.0f;
         transform.localRotation = Quaternion.identity;
-        selfRigidbody.useGravity = true;
+        selfRigidbody.useGravity = true;    // 중력 사용을 다시 활성화
         ExplodeArea.enabled = false;
     }
 
     public void AddForce(Vector3 force)
     {
+        // 정상적으로 NetworkBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때
+        //CmdAddForce(force);
+
+        // MonoBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때의 꼼수
         if (isServer)
         {
-            RpcAddForce(force);
+            RpcAddForce(force);        // Host 플레이어인경우 RPC로 보내고
         }
         else
         {
-            CmdAddForce(force);
+            CmdAddForce(force);        // Client 플레이어인경우 Cmd로 호스트로 보낸후 자신을 Self 동작
             if (isLocalPlayer)
                 InternelAddForce(force);
         }
@@ -117,16 +125,16 @@ public class Bomb : Bullet
     {
         InternelAddForce(force);
         base.SetDirtyBit(1);
-    }    
+    }
 
     void InternalExplode()
     {
         Debug.Log("InternalExplode is called");
         GameObject go = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EffectManager.GenerateEffect(EffectManager.BombExplodeFxIndex, transform.position);
-
+        //
         ExplodeArea.enabled = true;
         List<Enemy> targetList = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().EnemyManager.GetContainEnemies(ExplodeArea);
-        for(int i = 0; i < targetList.Count; i++)
+        for (int i = 0; i < targetList.Count; i++)
         {
             if (targetList[i].IsDead)
                 continue;
@@ -134,19 +142,24 @@ public class Bomb : Bullet
             targetList[i].OnBulletHited(Damage, targetList[i].transform.position);
         }
 
+        //
         if (gameObject.activeSelf)
             Disappear();
     }
 
     void Explode()
     {
-        if(isServer)
+        // 정상적으로 NetworkBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때
+        //CmdExplode();
+
+        // MonoBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때의 꼼수
+        if (isServer)
         {
-            RpcExplode();
+            RpcExplode();        // Host 플레이어인경우 RPC로 보내고
         }
         else
         {
-            CmdExplode();
+            CmdExplode();        // Client 플레이어인경우 Cmd로 호스트로 보낸후 자신을 Self 동작
             if (isLocalPlayer)
                 InternalExplode();
         }
@@ -168,7 +181,7 @@ public class Bomb : Bullet
 
     protected override bool OnBulletCollision(Collider collider)
     {
-        if( !base.OnBulletCollision(collider))
+        if (!base.OnBulletCollision(collider))
         {
             return false;
         }

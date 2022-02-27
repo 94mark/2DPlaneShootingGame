@@ -68,6 +68,7 @@ public class Actor : NetworkBehaviour
         }
     }
 
+
     // Start is called before the first frame update
     void Start()
     {
@@ -78,12 +79,14 @@ public class Actor : NetworkBehaviour
     {
         CurrentHp = MaxHP;
 
-        if(isServer)
+        if (isServer)
         {
             actorInstanceID = GetInstanceID();
             RpcSetActorInstanceID(actorInstanceID);
         }
+
     }
+
     // Update is called once per frame
     void Update()
     {
@@ -111,8 +114,9 @@ public class Actor : NetworkBehaviour
         if (isDead)
             return;
 
-        if(isServer)        
-            RpcDecreaseHP(value, damagePos);       
+        // MonoBehaviour 인스턴스의 Update로 호출되어 실행되고 있을때의 꼼수
+        if (isServer)
+            RpcDecreaseHP(value, damagePos);        // Host 플레이어인경우 RPC로 보내고
     }
 
     protected virtual void InternalDecreaseHP(int value, Vector3 damagePos)
@@ -125,7 +129,7 @@ public class Actor : NetworkBehaviour
         if (CurrentHp < 0)
             CurrentHp = 0;
 
-        if(CurrentHp == 0)
+        if (CurrentHp == 0)
         {
             OnDead();
         }
@@ -183,8 +187,9 @@ public class Actor : NetworkBehaviour
     {
         this.actorInstanceID = instID;
 
-        if(this.actorInstanceID != 0)
+        if (this.actorInstanceID != 0)
             SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().ActorManager.Regist(this.actorInstanceID, this);
+
         base.SetDirtyBit(1);
     }
 

@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class SystemManager : MonoBehaviour
 {
+    /// <summary>
+    /// 싱글톤 인스턴스
+    /// </summary>
     static SystemManager instance = null;
 
     public static SystemManager Instance
@@ -13,6 +16,7 @@ public class SystemManager : MonoBehaviour
             return instance;
         }
     }
+    //
 
     [SerializeField]
     EnemyTable enemyTable;
@@ -68,30 +72,39 @@ public class SystemManager : MonoBehaviour
         }
     }
 
-    public void Awake()
+    void Awake()
     {
-        if(instance != null)
+        // 유일하게 존재할 수 있도록 에러 처리
+        if (instance != null)
         {
-            Debug.LogError("SystemManager error! Singleton error!");
+            Debug.LogError("SystemManager is initialized twice!");
             Destroy(gameObject);
             return;
         }
 
         instance = this;
 
-        //Scene 이동 간에 사라지지 않도록 처리
+        // Scene 이동간에 사라지지 않도록 처리
         DontDestroyOnLoad(gameObject);
     }
 
+    // Start is called before the first frame update
     void Start()
     {
+
         BaseSceneMain baseSceneMain = GameObject.FindObjectOfType<BaseSceneMain>();
-        
         SystemManager.Instance.CurrentSceneMain = baseSceneMain;
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
     }
 
     public T GetCurrentSceneMain<T>()
-        where T : BaseSceneMain
+         where T : BaseSceneMain
     {
         return currentSceneMain as T;
     }

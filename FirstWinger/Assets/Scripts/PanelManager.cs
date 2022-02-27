@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public class PanelManager : MonoBehaviour
 {
@@ -10,20 +10,20 @@ public class PanelManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+
     }
 
     public static bool RegistPanel(Type PanelClassType, BasePanel basePanel)
     {
-        if(Panels.ContainsKey(PanelClassType))
+        if (Panels.ContainsKey(PanelClassType))
         {
-            Debug.LogError("RegistPanel Error! Already exis Type! PanelClassType = " + PanelClassType.ToString());
+            Debug.LogError("RegistPanel Error! Already exist Type! PanelClassType = " + PanelClassType.ToString());
             return false;
         }
 
@@ -33,7 +33,7 @@ public class PanelManager : MonoBehaviour
 
     public static bool UnregistPanel(Type PanelClassType)
     {
-        if(!Panels.ContainsKey(PanelClassType))
+        if (!Panels.ContainsKey(PanelClassType))
         {
             Debug.LogError("UnregistPanel Error! Can't Find Type! PanelClassType = " + PanelClassType.ToString());
             return false;
@@ -45,7 +45,7 @@ public class PanelManager : MonoBehaviour
 
     public static BasePanel GetPanel(Type PanelClassType)
     {
-        if(!Panels.ContainsKey(PanelClassType))
+        if (!Panels.ContainsKey(PanelClassType))
         {
             Debug.LogError("GetPanel Error! Can't Find Type! PanelClassType = " + PanelClassType.ToString());
             return null;

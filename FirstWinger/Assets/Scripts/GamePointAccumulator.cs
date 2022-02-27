@@ -26,4 +26,5 @@ public class GamePointAccumulator
     {
         gamePoint = 0;
     }
+
 }

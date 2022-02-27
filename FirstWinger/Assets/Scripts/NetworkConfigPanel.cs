@@ -50,6 +50,7 @@ public class NetworkConfigPanel : BasePanel
                 Debug.LogError("OnClientButton error port = " + PortInputField.text);
                 return;
             }
+
         }
 
         sceneMain.GotoNextScene();
