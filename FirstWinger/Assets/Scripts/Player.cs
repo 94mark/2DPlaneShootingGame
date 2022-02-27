@@ -55,6 +55,8 @@ public class Player : Actor
 
         if (isLocalPlayer)
             inGameSceneMain.Hero = this;
+        else
+            inGameSceneMain.OtherPlayer = this;
 
         if(isServer && isLocalPlayer)
         {
@@ -62,7 +64,7 @@ public class Player : Actor
             RpcSetHost();
         }
 
-        if (Host)
+        if (!Host)
         {     
             MeshRenderer meshRenderer = GetComponentInChildren<MeshRenderer>();
             meshRenderer.material = ClientPlayerMaterial;
