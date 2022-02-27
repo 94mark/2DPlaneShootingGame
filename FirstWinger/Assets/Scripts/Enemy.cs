@@ -274,7 +274,7 @@ public class Enemy : Actor
     {
         Bullet bullet = SystemManager.Instance.GetCurrentSceneMain<InGameSceneMain>().BulletManager.Generate(BulletIndex, FireTransform.position);
         if (bullet)
-            bullet.Fire(actorInstanceID, FireTransform.position, -FireTransform.right, BulletSpeed, Damage);        
+            bullet.Fire(actorInstanceID, -FireTransform.right, BulletSpeed, Damage);        
     }
 
     protected override void OnDead()

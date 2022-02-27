@@ -79,4 +79,10 @@ public class InGameNetworkTransfer : NetworkBehaviour
     {
         currentGameState = GameState.Running;
     }
+
+    [ClientRpc]
+    public void RpcGameEnd(bool success)
+    {
+        Debug.Log("RpcGameEnd success = " + success);
+    }
 }

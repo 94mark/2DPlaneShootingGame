@@ -111,16 +111,8 @@ public class Actor : NetworkBehaviour
         if (isDead)
             return;
 
-        if(isServer)
-        {
-            RpcDecreaseHP(value, damagePos);
-        }
-        else
-        {
-            CmdDecreaseHP(value, damagePos);
-            if (isLocalPlayer)
-                InternalDecreaseHP(value, damagePos);
-        }
+        if(isServer)        
+            RpcDecreaseHP(value, damagePos);       
     }
 
     protected virtual void InternalDecreaseHP(int value, Vector3 damagePos)

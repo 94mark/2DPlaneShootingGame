@@ -225,6 +225,11 @@ public class InGameSceneMain : BaseSceneMain
         EnemyManager.GenerateEnemy(data);
     }
 
+    public void OnGameEnd(bool success)
+    {
+        NetworkTransfer.RpcGameEnd(success);
+    }
+
     public void GotoTitleScene()
     {
 
